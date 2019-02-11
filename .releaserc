@@ -7,7 +7,7 @@
       "changelogTitle": "# NgxDynamicMenu - Changelog"
     }],
     ["@semantic-release/npm", {
-      "pkgRoot": "dist/ngx-dynamic-menu",
+      "pkgRoot": "dist/dynamic-menu",
       "tarballDir": "dist"
     }],
     ["@semantic-release/git", {
