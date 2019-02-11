@@ -1,10 +1,8 @@
 import { NgModule } from '@angular/core';
-import { DynamicMenuComponent } from './dynamic-menu.component';
 
 @NgModule({
-  declarations: [DynamicMenuComponent],
-  imports: [
-  ],
-  exports: [DynamicMenuComponent]
+  declarations: [],
+  imports: [],
+  exports: [],
 })
-export class DynamicMenuModule { }
+export class DynamicMenuModule {}
