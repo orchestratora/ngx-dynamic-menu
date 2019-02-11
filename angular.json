@@ -21,7 +21,7 @@
           "options": {
             "main": "projects/dynamic-menu/src/test.ts",
             "tsConfig": "projects/dynamic-menu/tsconfig.spec.json",
-            "karmaConfig": "projects/dynamic-menu/karma.conf.js"
+            "karmaConfig": "projects/dynamic-menu/karma.conf.ts"
           }
         },
         "lint": {
@@ -31,9 +31,7 @@
               "projects/dynamic-menu/tsconfig.lib.json",
               "projects/dynamic-menu/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
