@@ -1,0 +1,21 @@
+{
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/changelog", {
+      "changelogFile": "CHANGELOG.md",
+      "changelogTitle": "# NgxDynamicMenu - Changelog"
+    }],
+    ["@semantic-release/npm", {
+      "pkgRoot": "dist/ngx-dynamic-menu",
+      "tarballDir": "dist"
+    }],
+    ["@semantic-release/git", {
+      "assets": ["CHANGELOG.md"],
+      "message": "docs(changelog): add changes of ${nextRelease.version} [skip ci]"
+    }],
+    ["@semantic-release/github", {
+      "assets": "dist/*.tgz"
+    }]
+  ]
+}
