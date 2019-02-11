@@ -3,7 +3,7 @@
 
 // tslint:disable
 
-module.exports = function(config) {
+module.exports = function(config: any) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
