@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { Route, RouteConfigLoadEnd, Router } from '@angular/router';
-import { EMPTY } from 'rxjs';
+import { EMPTY, zip } from 'rxjs';
 import {
   filter,
   map,
@@ -11,6 +11,7 @@ import {
 
 import { DynamicMenuExtrasToken } from './dynamic-menu-extras';
 import { DYNAMIC_MENU_ROUTES_TOKEN } from './dynamic-menu-routes';
+import { SUB_MENU_MAP_TOKEN, SubMenuMap } from './sub-menu-map-provider';
 import { DataWithMenu, MenuItem, RoutesWithMenu, RouteWithMenu } from './types';
 
 export interface DynamicMenuItem extends MenuItem {
@@ -44,8 +45,13 @@ export class DynamicMenuService {
     map(() => this.getDynamicMenuRoutes()),
   );
 
-  private dynamicMenu$ = this.dynamicMenuRoutes$.pipe(
-    map(routes => this.buildFullUrlTree(routes)),
+  private subMenuMap$ = this.configChanged$.pipe(
+    startWith(null),
+    map(() => this.getSubMenuMap()),
+  );
+
+  private dynamicMenu$ = zip(this.dynamicMenuRoutes$, this.subMenuMap$).pipe(
+    map(([routes, subMenuMap]) => this.buildFullUrlTree(routes, subMenuMap)),
     publishBehavior([] as DynamicMenuRouteConfig[]),
     refCount(),
   );
@@ -66,18 +72,42 @@ export class DynamicMenuService {
       .reduce((acc, routes) => [...acc, ...routes], []);
   }
 
+  private getSubMenuMap() {
+    return this.injector.get(SUB_MENU_MAP_TOKEN);
+  }
+
+  private resolveSubMenuComponent(
+    config: DynamicMenuRouteConfig,
+    subMenuMap: SubMenuMap[],
+  ) {
+    const name = config.data.menu.subMenuComponent;
+
+    if (name === 'string') {
+      const info = subMenuMap.find(m => m.name === name);
+      return info ? info.type : name;
+    }
+
+    return name;
+  }
+
   private shouldSkipConfig(config: RouteWithMenu) {
     return config.path === '**' || !!config.redirectTo;
   }
 
-  private buildFullUrlTree(node: RoutesWithMenu): DynamicMenuRouteConfig[] {
+  private buildFullUrlTree(
+    node: RoutesWithMenu,
+    subMenuMap: SubMenuMap[],
+  ): DynamicMenuRouteConfig[] {
     return this.buildUrlTree(node, (config, parentConfig) => {
       const path = parentConfig
         ? parentConfig.fullUrl || [parentConfig.path]
         : [];
-      // tslint:disable-next-line: no-non-null-assertion
-      config = { ...config, fullUrl: [...path, config.path!].filter(Boolean) };
-      return config;
+      return {
+        ...config,
+        // tslint:disable-next-line: no-non-null-assertion
+        fullUrl: [...path, config.path!].filter(Boolean),
+        subMenuComponent: this.resolveSubMenuComponent(config, subMenuMap),
+      };
     });
   }
 

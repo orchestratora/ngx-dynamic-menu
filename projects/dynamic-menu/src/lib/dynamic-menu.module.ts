@@ -1,4 +1,10 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import {
+  ANALYZE_FOR_ENTRY_COMPONENTS,
+  ModuleWithProviders,
+  NgModule,
+  Provider,
+  Type,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import {
@@ -6,6 +12,7 @@ import {
   provideDynamicMenuExtras,
 } from './dynamic-menu-extras';
 import { provideDynamicMenuRoutes } from './dynamic-menu-routes';
+import { provideSubMenuMap } from './sub-menu-map-provider';
 import { RoutesWithMenu } from './types';
 
 @NgModule({
@@ -32,5 +39,22 @@ export class DynamicMenuModule {
         provideDynamicMenuRoutes(routes),
       ],
     };
+  }
+
+  /**
+   * Use this method to provide mapping for components used in sub menus
+   *
+   * If they are referenced with string for lazy-loading purpose then
+   * this provider is required for that to work
+   */
+  static provideSubMenu(name: string, component: Type<any>): Provider[] {
+    return [
+      {
+        provide: ANALYZE_FOR_ENTRY_COMPONENTS,
+        useValue: component,
+        multi: true,
+      },
+      provideSubMenuMap(name, component),
+    ];
   }
 }
