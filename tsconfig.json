@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "dynamic-menu": [
+        "dist/dynamic-menu"
+      ],
+      "dynamic-menu/*": [
+        "dist/dynamic-menu/*"
+      ]
+    }
   }
 }
