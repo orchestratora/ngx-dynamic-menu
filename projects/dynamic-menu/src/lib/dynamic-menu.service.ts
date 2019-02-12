@@ -1,7 +1,8 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector, Type } from '@angular/core';
 import { Route, RouteConfigLoadEnd, Router } from '@angular/router';
 import { EMPTY, zip } from 'rxjs';
 import {
+  delay,
   filter,
   map,
   publishBehavior,
@@ -25,6 +26,7 @@ export interface DynamicDataWithMenu extends DataWithMenu {
 export interface DynamicMenuRouteConfig extends RouteWithMenu {
   data: DynamicDataWithMenu;
   fullUrl: string[];
+  subMenuComponent?: Type<any> | string;
 }
 
 export type DynamicMenuConfigFn = (
@@ -51,6 +53,7 @@ export class DynamicMenuService {
   );
 
   private dynamicMenu$ = zip(this.dynamicMenuRoutes$, this.subMenuMap$).pipe(
+    delay(0),
     map(([routes, subMenuMap]) => this.buildFullUrlTree(routes, subMenuMap)),
     publishBehavior([] as DynamicMenuRouteConfig[]),
     refCount(),
@@ -68,18 +71,22 @@ export class DynamicMenuService {
 
   private getDynamicMenuRoutes() {
     return this.injector
-      .get(DYNAMIC_MENU_ROUTES_TOKEN)
-      .reduce((acc, routes) => [...acc, ...routes], []);
+      .get(DYNAMIC_MENU_ROUTES_TOKEN, [])
+      .reduce((acc, routes) => [...acc, ...routes], this.router.config);
   }
 
   private getSubMenuMap() {
-    return this.injector.get(SUB_MENU_MAP_TOKEN);
+    return this.injector.get(SUB_MENU_MAP_TOKEN, []);
   }
 
   private resolveSubMenuComponent(
     config: DynamicMenuRouteConfig,
     subMenuMap: SubMenuMap[],
   ) {
+    if (!config.data || !config.data.menu) {
+      return '';
+    }
+
     const name = config.data.menu.subMenuComponent;
 
     if (typeof name === 'string') {
@@ -133,8 +140,17 @@ export class DynamicMenuService {
       return [];
     }
 
+    const usedPaths = {} as any;
+
     return node.reduce(
       (paths, config) => {
+        if (config.path != null) {
+          if (config.path in usedPaths) {
+            return paths;
+          }
+          usedPaths[config.path] = true;
+        }
+
         const newNode = fn(config as DynamicMenuRouteConfig, parentNode);
 
         if (!isConfigMenuItem(config) || this.shouldSkipConfig(config)) {
@@ -163,7 +179,8 @@ export class DynamicMenuService {
     fn: DynamicMenuConfigFn,
     parentNode: DynamicMenuRouteConfig,
   ): DynamicMenuRouteConfig[] {
-    const children = config.children || config.loadChildren;
+    const children =
+      config.children || getLoadedConfig(config) || config.loadChildren;
 
     if (Array.isArray(children)) {
       return this._buildUrlTree(
@@ -175,6 +192,10 @@ export class DynamicMenuService {
 
     return [];
   }
+}
+
+function getLoadedConfig(config: any) {
+  return config._loadedConfig && config._loadedConfig.routes;
 }
 
 function isConfigMenuItem(config: Route): config is DynamicMenuRouteConfig {

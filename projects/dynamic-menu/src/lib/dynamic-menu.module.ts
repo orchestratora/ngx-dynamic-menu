@@ -30,7 +30,7 @@ export class DynamicMenuModule {
    */
   static withRoutes(
     routes: RoutesWithMenu,
-    extras: DynamicMenuExtras = {},
+    extras?: DynamicMenuExtras,
   ): ModuleWithProviders {
     return {
       ngModule: DynamicMenuModule,

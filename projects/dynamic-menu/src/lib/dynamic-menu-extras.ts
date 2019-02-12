@@ -27,7 +27,9 @@ export class DynamicMenuExtrasToken implements DynamicMenuExtras {
  * Helper function to provide {@link DYNAMIC_MENU_EXTRAS_TOKEN}
  * @internal
  */
-export function provideDynamicMenuExtras(extras: DynamicMenuExtras): Provider {
+export function provideDynamicMenuExtras(
+  extras: DynamicMenuExtras = {},
+): Provider {
   return {
     provide: DynamicMenuExtrasToken,
     useValue: new DynamicMenuExtrasToken(extras.listenForConfigChanges),
