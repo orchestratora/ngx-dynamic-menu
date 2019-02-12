@@ -18,7 +18,7 @@
     "e2e": "ng e2e",
     "format": "npm-run-all -p format:*",
     "format:code": "prettier --write \"projects/**/*.{ts,js,json,?css}\"",
-    "pack": "copyfiles LICENSE dist/dynamic-menu",
+    "pack": "copyfiles LICENSE README.md dist/dynamic-menu",
     "presemantic-release": "npm run build && npm run pack",
     "semantic-release": "semantic-release"
   },
