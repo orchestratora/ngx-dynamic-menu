@@ -1,5 +1,12 @@
 # NgxDynamicMenu
 
+[![Build Status](https://travis-ci.org/orchestratora/ngx-dynamic-menu.svg?branch=master)](https://travis-ci.org/orchestratora/ngx-dynamic-menu)
+[![Coverage](https://img.shields.io/codecov/c/github/orchestratora/ngx-dynamic-menu.svg?maxAge=2592000)](https://codecov.io/gh/orchestratora/ngx-dynamic-menu)
+[![Npm](https://img.shields.io/npm/v/@orchestrator/ngx-dynamic-menu.svg)](https://www.npmjs.com/package/@orchestrator/ngx-dynamic-menu)
+[![Npm Downloads](https://img.shields.io/npm/dt/@orchestrator/ngx-dynamic-menu.svg)](https://www.npmjs.com/package/@orchestrator/ngx-dynamic-menu)
+![Licence](https://img.shields.io/github/license/orchestratora/ngx-dynamic-menu.svg)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+
 > Generate Angular application menu from your routing configuration!
 
 ---
