@@ -1,9 +1,6 @@
 # NgxDynamicMenu
 
-| Package      | NPM                              | Repository                     |
-| ------------ | -------------------------------- | ------------------------------ |
-| dynamic-menu | `@orchestrator/ngx-dynamic-menu` | [link](/projects/dynamic-menu) |
-|              |                                  |                                |
+> Generate Angular application menu from your routing configuration!
 
 ---
 
