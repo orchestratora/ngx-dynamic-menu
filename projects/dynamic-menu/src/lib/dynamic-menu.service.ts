@@ -82,7 +82,7 @@ export class DynamicMenuService {
   ) {
     const name = config.data.menu.subMenuComponent;
 
-    if (name === 'string') {
+    if (typeof name === 'string') {
       const info = subMenuMap.find(m => m.name === name);
       return info ? info.type : name;
     }
