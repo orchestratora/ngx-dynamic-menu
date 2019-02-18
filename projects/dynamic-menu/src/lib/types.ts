@@ -21,7 +21,7 @@ export interface MenuItem {
   /**
    * Same as {@link MenuItem.showChildrenIfActivated} but match route with exact method
    */
-  showChildrenIfActivatedExact?: boolean;
+  showChildrenIfChildActivated?: boolean;
   /**
    * Render custom component between item and sub-items when route activated
    *
