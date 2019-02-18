@@ -112,7 +112,7 @@ export class DynamicMenuService {
       return {
         ...config,
         // tslint:disable-next-line: no-non-null-assertion
-        fullUrl: [...path, config.path!].filter(Boolean),
+        fullUrl: [...path, config.path!].filter(p => p != null),
         subMenuComponent: this.resolveSubMenuComponent(config, subMenuMap),
       };
     });

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ANALYZE_FOR_ENTRY_COMPONENTS,
   ModuleWithProviders,
@@ -7,6 +8,7 @@ import {
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
+import { DynamicMenuComponentModule } from './dynamic-menu';
 import {
   DynamicMenuExtras,
   provideDynamicMenuExtras,
@@ -16,11 +18,23 @@ import { provideSubMenuMap } from './sub-menu-map-provider';
 import { RoutesWithMenu } from './types';
 
 @NgModule({
-  declarations: [],
-  imports: [RouterModule],
-  exports: [],
+  imports: [CommonModule, RouterModule, DynamicMenuComponentModule],
+  exports: [DynamicMenuComponentModule],
 })
 export class DynamicMenuModule {
+  /**
+   * Provides module that will take menu config from Router config
+   */
+  static forRouter(extras?: DynamicMenuExtras): ModuleWithProviders {
+    return {
+      ngModule: DynamicMenuModule,
+      providers: [
+        provideDynamicMenuExtras(extras),
+        provideDynamicMenuRoutes([]),
+      ],
+    };
+  }
+
   /**
    * Provides module with routes that have config for menu
    *

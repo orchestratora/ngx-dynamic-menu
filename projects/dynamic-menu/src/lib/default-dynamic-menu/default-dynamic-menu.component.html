@@ -1,0 +1,13 @@
+<ndm-dynamic-menu>
+  <ul *ndmDynamicMenuWrapper>
+    <ndm-dynamic-menu-items></ndm-dynamic-menu-items>
+  </ul>
+  <li *ndmDynamicMenuItem="let config; let item = item">
+    <a [routerLink]="config.fullUrl">{{ item.label }}</a>
+    <ndm-dynamic-menu-items></ndm-dynamic-menu-items>
+  </li>
+  <li *ndmDynamicMenuToggle="let item = item; let opened = opened">
+    <button (click)="opened = !opened">{{ item.label }}</button>
+    <ndm-dynamic-menu-items *ngIf="opened"></ndm-dynamic-menu-items>
+  </li>
+</ndm-dynamic-menu>

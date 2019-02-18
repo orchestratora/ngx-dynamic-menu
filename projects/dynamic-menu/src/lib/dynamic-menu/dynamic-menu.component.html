@@ -1,0 +1,29 @@
+<ng-container
+  *ngTemplateOutlet="renderWrapper; context: { $implicit: menu$ | async }"
+></ng-container>
+
+<ng-template #renderWrapper let-configs>
+  <ng-container
+    *ngIf="configs?.length"
+    [ngTemplateOutlet]="wrapperDir?.tplRef"
+    [ngTemplateOutletContext]="getWrapperCtx(configs, renderMenuTpl)"
+  ></ng-container>
+</ng-template>
+
+<ng-template #renderMenuTpl let-configs>
+  <ng-container *ngFor="let config of configs">
+    <ng-container
+      *ngIf="config.data.menu.renderAsToggle; else renderAsItem"
+      [ngTemplateOutlet]="toggleDir?.tplRef || itemDir?.tplRef"
+      [ngTemplateOutletContext]="getToggleCtx(config, renderWrapper)"
+    ></ng-container>
+    <ng-template #renderAsItem>
+      <ng-container
+        *ngTemplateOutlet="
+          itemDir?.tplRef;
+          context: getItemCtx(config, renderWrapper)
+        "
+      ></ng-container>
+    </ng-template>
+  </ng-container>
+</ng-template>
