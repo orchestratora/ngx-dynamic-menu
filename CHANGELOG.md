@@ -1,5 +1,17 @@
 # NgxDynamicMenu - Changelog
 
+# [1.1.0](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.0.0...v1.1.0) (2019-02-18)
+
+
+### Bug Fixes
+
+* **type:** rename menu item showChildrenIfActivatedExact ([f86654a](https://github.com/orchestratora/ngx-dynamic-menu/commit/f86654a)), closes [#2](https://github.com/orchestratora/ngx-dynamic-menu/issues/2)
+
+
+### Features
+
+* **type:** add renderAsToggle flag to MenuItem ([a02dc40](https://github.com/orchestratora/ngx-dynamic-menu/commit/a02dc40)), closes [#3](https://github.com/orchestratora/ngx-dynamic-menu/issues/3)
+
 # 1.0.0 (2019-02-12)
 
 
