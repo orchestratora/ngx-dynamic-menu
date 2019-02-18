@@ -29,6 +29,10 @@ export interface MenuItem {
    * and {@link MenuItem.showChildrenIfActivatedExact}
    */
   subMenuComponent?: Type<any> | string;
+  /**
+   * Will render `dynamicMenuToggle` template for menu item
+   */
+  renderAsToggle?: boolean;
 }
 
 export interface DataWithMenu extends Data {
