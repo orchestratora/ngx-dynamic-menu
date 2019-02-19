@@ -1,27 +1,76 @@
-/* tslint:disable:no-unused-variable */
+import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
 
+import { DynamicMenuTemplateContext } from '../context-template';
 import { DynamicMenuItemsComponent } from './dynamic-menu-items.component';
 
-describe('DynamicMenuItemsComponent', () => {
-  let component: DynamicMenuItemsComponent;
-  let fixture: ComponentFixture<DynamicMenuItemsComponent>;
+@Component({
+  selector: 'ndm-host',
+  template: `
+    <ndm-dynamic-menu-items></ndm-dynamic-menu-items>
+  `,
+})
+class HostComponent {
+  getCtx = jasmine.createSpy('getCtx spy');
+}
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DynamicMenuItemsComponent],
-    }).compileComponents();
-  }));
+describe('DynamicMenuItemsComponent', () => {
+  let hostComp: HostComponent;
+  let fixture: ComponentFixture<HostComponent>;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DynamicMenuItemsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    TestBed.configureTestingModule({
+      declarations: [DynamicMenuItemsComponent, HostComponent],
+    });
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  const init = async(async () => {
+    await TestBed.compileComponents();
+    fixture = TestBed.createComponent(HostComponent);
+    hostComp = fixture.componentInstance;
+  });
+
+  describe('outside `DynamicMenuTemplateContext`', () => {
+    beforeEach(init);
+
+    it('should throw error on init', () => {
+      expect(() => fixture.detectChanges()).toThrow();
+    });
+  });
+
+  describe('in `DynamicMenuTemplateContext`', () => {
+    beforeEach(done => {
+      overrideHostTpl(`
+        <ng-container *ngTemplateOutlet="comp; context: getCtx(tpl)"></ng-container>
+        <ng-template #comp>
+          <ndm-dynamic-menu-items></ndm-dynamic-menu-items>
+        </ng-template>
+        <ng-template #tpl let-v>Tpl: {{ v }}</ng-template>
+      `);
+
+      init(done);
+    });
+
+    it('should NOT throw on init', () => {
+      hostComp.getCtx.and.callFake(
+        (tpl: any) => new DynamicMenuTemplateContext(tpl, {}),
+      );
+
+      expect(() => fixture.detectChanges()).not.toThrow();
+    });
+
+    it('should render tpl with context from `DynamicMenuTemplateContext`', () => {
+      hostComp.getCtx.and.callFake(
+        (tpl: any) => new DynamicMenuTemplateContext(tpl, { $implicit: 'var' }),
+      );
+
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toBe('Tpl: var');
+    });
   });
 });
+
+function overrideHostTpl(tpl: string) {
+  TestBed.overrideTemplate(HostComponent, tpl);
+}
