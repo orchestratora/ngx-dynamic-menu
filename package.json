@@ -13,7 +13,7 @@
     "test": "ng test --watch=false",
     "test:w": "ng test --watch=true",
     "test:ci": "npm run test -- --code-coverage --browsers ChromeHeadless",
-    "test:report": "cd coverage && codecov",
+    "test:report": "cd coverage/dynamic-menu && codecov",
     "lint": "ng lint dynamic-menu",
     "e2e": "ng e2e",
     "format": "npm-run-all -p format:*",
