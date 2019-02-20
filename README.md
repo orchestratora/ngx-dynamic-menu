@@ -19,7 +19,7 @@ $ npm install @orchestrator/ngx-dynamic-menu
 - [Why](#why)
 - [Usage](#usage)
   - [Customization](#customization)
-- [Documentation](/wiki)
+- [Documentation](https://github.com/orchestratora/ngx-dynamic-menu/wiki)
 
 ## Why?
 
