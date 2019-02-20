@@ -21,7 +21,8 @@
           "options": {
             "main": "projects/dynamic-menu/src/test.ts",
             "tsConfig": "projects/dynamic-menu/tsconfig.spec.json",
-            "karmaConfig": "projects/dynamic-menu/karma.conf.ts"
+            "karmaConfig": "projects/dynamic-menu/karma.conf.ts",
+            "codeCoverageExclude": ["src/test.ts"]
           }
         },
         "lint": {
@@ -31,9 +32,7 @@
               "projects/dynamic-menu/tsconfig.lib.json",
               "projects/dynamic-menu/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -79,9 +78,7 @@
               "projects/demo/src/favicon.ico",
               "projects/demo/src/assets"
             ],
-            "styles": [
-              "projects/demo/src/styles.css"
-            ],
+            "styles": ["projects/demo/src/styles.css"],
             "scripts": [],
             "es5BrowserSupport": true
           },
@@ -136,9 +133,7 @@
             "polyfills": "projects/demo/src/polyfills.ts",
             "tsConfig": "projects/demo/tsconfig.spec.json",
             "karmaConfig": "projects/demo/karma.conf.js",
-            "styles": [
-              "projects/demo/src/styles.css"
-            ],
+            "styles": ["projects/demo/src/styles.css"],
             "scripts": [],
             "assets": [
               "projects/demo/src/favicon.ico",
@@ -153,9 +148,7 @@
               "projects/demo/tsconfig.app.json",
               "projects/demo/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -181,9 +174,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "projects/demo-e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
