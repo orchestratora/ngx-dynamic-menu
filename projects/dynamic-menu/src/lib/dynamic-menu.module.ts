@@ -29,7 +29,7 @@ export class DynamicMenuModule {
     return {
       ngModule: DynamicMenuModule,
       providers: [
-        provideDynamicMenuExtras(extras),
+        provideDynamicMenuExtras({ listenForConfigChanges: true, ...extras }),
         provideDynamicMenuRoutes([]),
       ],
     };

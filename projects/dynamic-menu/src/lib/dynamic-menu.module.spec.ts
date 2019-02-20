@@ -40,6 +40,22 @@ describe('Module: DynamicMenu', () => {
         ]),
       );
     });
+
+    it('should set `extras.listenForConfigChanges` by default', () => {
+      const extras = {};
+      const res = DynamicMenuModule.forRouter(extras);
+
+      expect(res.providers as any).toEqual(
+        jasmine.arrayContaining([
+          {
+            provide: DynamicMenuExtrasToken,
+            useValue: jasmine.objectContaining({
+              listenForConfigChanges: true,
+            }),
+          },
+        ]),
+      );
+    });
   });
 
   describe('static withRoutes()', () => {
