@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+## [1.2.1](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.2.0...v1.2.1) (2019-02-20)
+
+
+### Bug Fixes
+
+* **module:** listen for config updates by default in forRouter() ([f71070a](https://github.com/orchestratora/ngx-dynamic-menu/commit/f71070a))
+
 # [1.2.0](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.1.0...v1.2.0) (2019-02-20)
 
 
