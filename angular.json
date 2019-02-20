@@ -22,7 +22,7 @@
             "main": "projects/dynamic-menu/src/test.ts",
             "tsConfig": "projects/dynamic-menu/tsconfig.spec.json",
             "karmaConfig": "projects/dynamic-menu/karma.conf.ts",
-            "codeCoverageExclude": ["src/test.ts"]
+            "codeCoverageExclude": ["**/src/test.ts"]
           }
         },
         "lint": {
