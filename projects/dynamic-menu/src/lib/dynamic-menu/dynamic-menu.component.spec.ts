@@ -35,7 +35,7 @@ class DynamicMenuServiceMock {
 })
 class HostComponent {}
 
-fdescribe('DynamicMenuComponent', () => {
+describe('DynamicMenuComponent', () => {
   let hostComp: HostComponent;
   let fixture: ComponentFixture<HostComponent>;
 
