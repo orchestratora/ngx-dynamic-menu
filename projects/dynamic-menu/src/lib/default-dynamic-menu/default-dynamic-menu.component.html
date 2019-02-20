@@ -6,8 +6,8 @@
     <a [routerLink]="config.fullUrl">{{ item.label }}</a>
     <ndm-dynamic-menu-items></ndm-dynamic-menu-items>
   </li>
-  <li *ndmDynamicMenuToggle="let item = item; let opened = opened">
-    <button (click)="opened = !opened">{{ item.label }}</button>
-    <ndm-dynamic-menu-items *ngIf="opened"></ndm-dynamic-menu-items>
+  <li *ndmDynamicMenuToggle="let item = item; let ctx = context">
+    <button (click)="ctx.opened = !ctx.opened">{{ item.label }}</button>
+    <ndm-dynamic-menu-items *ngIf="ctx.opened"></ndm-dynamic-menu-items>
   </li>
 </ndm-dynamic-menu>

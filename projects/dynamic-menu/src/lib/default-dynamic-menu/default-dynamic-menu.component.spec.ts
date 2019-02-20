@@ -15,7 +15,7 @@ import { DynamicMenuToggleDirective } from '../dynamic-menu/dynamic-menu-toggle/
 import { DynamicMenuWrapperDirective } from '../dynamic-menu/dynamic-menu-wrapper/dynamic-menu-wrapper.directive';
 import { DefaultDynamicMenuComponent } from './default-dynamic-menu.component';
 
-fdescribe('DefaultDynamicMenuComponent', () => {
+describe('DefaultDynamicMenuComponent', () => {
   @Component({
     selector: 'ndm-dynamic-menu',
     template: `
@@ -139,7 +139,11 @@ fdescribe('DefaultDynamicMenuComponent', () => {
     });
 
     it('should render <button> with `item.label`', () => {
-      dynamicMenuComp.ctx = { $implicit: {}, item: { label: 'label' } };
+      dynamicMenuComp.ctx = {
+        $implicit: {},
+        item: { label: 'label' },
+        context: { opened: false },
+      };
 
       cdr.detectChanges();
 
@@ -153,7 +157,7 @@ fdescribe('DefaultDynamicMenuComponent', () => {
         dynamicMenuComp.ctx = {
           $implicit: {},
           item: { label: 'label' },
-          opened: true,
+          context: { opened: true },
         };
 
         cdr.detectChanges();
@@ -168,7 +172,7 @@ fdescribe('DefaultDynamicMenuComponent', () => {
         dynamicMenuComp.ctx = {
           $implicit: {},
           item: { label: 'label' },
-          opened: false,
+          context: { opened: false },
         };
 
         cdr.detectChanges();
@@ -183,7 +187,7 @@ fdescribe('DefaultDynamicMenuComponent', () => {
         dynamicMenuComp.ctx = {
           $implicit: {},
           item: { label: 'label' },
-          opened: false,
+          context: { opened: false },
         };
 
         cdr.detectChanges();

@@ -5,7 +5,7 @@ import { DynamicMenuItemContext } from './context-item';
 
 export class DynamicMenuToggleContext extends DynamicMenuItemContext {
   /** Flag that helps to control visibility of children, `false` by default */
-  opened = false;
+  context = { opened: false };
 
   constructor(
     /** Every computed route config */
