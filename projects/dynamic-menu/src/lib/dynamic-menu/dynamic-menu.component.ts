@@ -77,7 +77,6 @@ export class DynamicMenuComponent implements OnInit, OnDestroy {
 
     const ctx = factory();
     this.ctxCache.set(key, ctx);
-    console.log('init ctx', ctx);
 
     return ctx;
   }
