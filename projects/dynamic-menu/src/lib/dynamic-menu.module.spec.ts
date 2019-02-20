@@ -10,6 +10,38 @@ describe('Module: DynamicMenu', () => {
     expect(DynamicMenuModule).toBeTruthy();
   });
 
+  describe('static forRouter()', () => {
+    it('should return same ngModule', () => {
+      const res = DynamicMenuModule.forRouter();
+
+      expect(res.ngModule).toBe(DynamicMenuModule);
+    });
+
+    it('should provide `DYNAMIC_MENU_ROUTES_TOKEN` multi token with `[]` as useValue', () => {
+      const res = DynamicMenuModule.forRouter();
+
+      expect(res.providers as any).toEqual(
+        jasmine.arrayContaining([
+          { provide: DYNAMIC_MENU_ROUTES_TOKEN, useValue: [], multi: true },
+        ]),
+      );
+    });
+
+    it('should provide `DynamicMenuExtrasToken` token with `extras` as useValue', () => {
+      const extras = { listenForConfigChanges: true };
+      const res = DynamicMenuModule.forRouter(extras);
+
+      expect(res.providers as any).toEqual(
+        jasmine.arrayContaining([
+          {
+            provide: DynamicMenuExtrasToken,
+            useValue: jasmine.objectContaining(extras),
+          },
+        ]),
+      );
+    });
+  });
+
   describe('static withRoutes()', () => {
     it('should return same ngModule', () => {
       const res = DynamicMenuModule.withRoutes([]);
