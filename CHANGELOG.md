@@ -1,5 +1,17 @@
 # NgxDynamicMenu - Changelog
 
+# [1.2.0](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.1.0...v1.2.0) (2019-02-20)
+
+
+### Bug Fixes
+
+* **dynamic-menu:** wrap opened into object in toggle context ([0503e05](https://github.com/orchestratora/ngx-dynamic-menu/commit/0503e05))
+
+
+### Features
+
+* **dynamic-menu:** add component to render menu ([1cae1c0](https://github.com/orchestratora/ngx-dynamic-menu/commit/1cae1c0)), closes [#1](https://github.com/orchestratora/ngx-dynamic-menu/issues/1)
+
 # [1.1.0](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.0.0...v1.1.0) (2019-02-18)
 
 
