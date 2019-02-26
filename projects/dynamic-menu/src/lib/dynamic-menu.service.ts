@@ -1,4 +1,4 @@
-import { Injectable, Injector, Type } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Route, RouteConfigLoadEnd, Router } from '@angular/router';
 import { EMPTY, zip } from 'rxjs';
 import {
@@ -13,26 +13,12 @@ import {
 import { DynamicMenuExtrasToken } from './dynamic-menu-extras';
 import { DYNAMIC_MENU_ROUTES_TOKEN } from './dynamic-menu-routes';
 import { SUB_MENU_MAP_TOKEN, SubMenuMap } from './sub-menu-map-provider';
-import { DataWithMenu, MenuItem, RoutesWithMenu, RouteWithMenu } from './types';
-
-export interface DynamicMenuItem extends MenuItem {
-  children: DynamicMenuRouteConfig[];
-}
-
-export interface DynamicDataWithMenu extends DataWithMenu {
-  menu: DynamicMenuItem;
-}
-
-export interface DynamicMenuRouteConfig extends RouteWithMenu {
-  data: DynamicDataWithMenu;
-  fullUrl: string[];
-  subMenuComponent?: Type<any> | string;
-}
-
-export type DynamicMenuConfigFn = (
-  config: DynamicMenuRouteConfig,
-  parentConfig?: DynamicMenuRouteConfig,
-) => DynamicMenuRouteConfig;
+import {
+  DynamicMenuConfigFn,
+  DynamicMenuRouteConfig,
+  RoutesWithMenu,
+  RouteWithMenu,
+} from './types';
 
 @Injectable({
   providedIn: 'root',

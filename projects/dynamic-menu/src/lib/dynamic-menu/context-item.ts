@@ -1,6 +1,6 @@
 import { TemplateRef } from '@angular/core';
 
-import { DynamicMenuRouteConfig } from '../dynamic-menu.service';
+import { DynamicMenuRouteConfig } from '../types';
 import { DynamicMenuTemplateContext } from './context-template';
 
 export class DynamicMenuItemContext extends DynamicMenuTemplateContext {

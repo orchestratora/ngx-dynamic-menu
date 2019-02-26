@@ -7,12 +7,9 @@ import { takeUntil } from 'rxjs/operators';
 
 import { provideDynamicMenuExtras } from './dynamic-menu-extras';
 import { provideDynamicMenuRoutes } from './dynamic-menu-routes';
-import {
-  DynamicMenuRouteConfig,
-  DynamicMenuService,
-} from './dynamic-menu.service';
+import { DynamicMenuService } from './dynamic-menu.service';
 import { provideSubMenuMap } from './sub-menu-map-provider';
-import { RoutesWithMenu } from './types';
+import { DynamicMenuRouteConfig, RoutesWithMenu } from './types';
 
 @Component({ selector: 'ndm-test', template: '' })
 class TestComponent {}

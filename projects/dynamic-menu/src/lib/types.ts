@@ -44,3 +44,22 @@ export interface RouteWithMenu extends Route {
 }
 
 export interface RoutesWithMenu extends Array<RouteWithMenu> {}
+
+export interface DynamicMenuItem extends MenuItem {
+  children: DynamicMenuRouteConfig[];
+}
+
+export interface DynamicDataWithMenu extends DataWithMenu {
+  menu: DynamicMenuItem;
+}
+
+export interface DynamicMenuRouteConfig extends RouteWithMenu {
+  data: DynamicDataWithMenu;
+  fullUrl: string[];
+  subMenuComponent?: Type<any> | string;
+}
+
+export type DynamicMenuConfigFn = (
+  config: DynamicMenuRouteConfig,
+  parentConfig?: DynamicMenuRouteConfig,
+) => DynamicMenuRouteConfig;

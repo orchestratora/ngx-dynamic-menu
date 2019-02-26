@@ -9,10 +9,8 @@ import {
 import { EMPTY, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import {
-  DynamicMenuRouteConfig,
-  DynamicMenuService,
-} from '../dynamic-menu.service';
+import { DynamicMenuService } from '../dynamic-menu.service';
+import { DynamicMenuRouteConfig } from '../types';
 import { DynamicMenuItemContext } from './context-item';
 import { DynamicMenuToggleContext } from './context-toggle';
 import { DynamicMenuWrapperContext } from './context-wrapper';
@@ -53,6 +51,7 @@ export class DynamicMenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed$.next();
+    this.ctxCache.clear();
   }
 
   getWrapperCtx(configs: DynamicMenuRouteConfig[], tpl: TemplateRef<any>) {
