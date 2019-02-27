@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { RoutesWithMenu } from 'projects/dynamic-menu/src/lib/types';
+import { DynamicMenuModule } from 'projects/dynamic-menu/src/public_api';
 
 import { PrintPathComponent } from './print-path/print-path.component';
 
@@ -23,14 +24,27 @@ const routes: RoutesWithMenu = [
       {
         path: 'path5',
         component: PrintPathComponent,
-        data: { menu: { label: 'Section 5' } },
+        data: { menu: { label: 'Section 5', renderAsToggle: true } },
+        children: [
+          {
+            path: 'path8',
+            component: PrintPathComponent,
+            data: { menu: { label: 'Section 8' } },
+          },
+        ],
       },
     ],
   },
   {
     path: 'path3',
     component: PrintPathComponent,
-    data: { menu: { label: 'Section 3' } },
+    data: {
+      menu: {
+        label: 'Section 3',
+        showChildrenIfActivated: true,
+        subMenuComponent: 'SubMenuForSection3',
+      },
+    },
     children: [
       {
         path: 'path6',
@@ -49,5 +63,8 @@ const routes: RoutesWithMenu = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
+  providers: [
+    DynamicMenuModule.provideSubMenu('SubMenuForSection3', PrintPathComponent),
+  ],
 })
 export class AppRoutingModule {}
