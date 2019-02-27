@@ -55,6 +55,10 @@ export class DynamicMenuService {
     return this.dynamicMenu$;
   }
 
+  isActive(fullPath: string[], exact = false) {
+    return this.router.isActive(this.router.createUrlTree(fullPath), exact);
+  }
+
   private getDynamicMenuRoutes() {
     return this.injector
       .get(DYNAMIC_MENU_ROUTES_TOKEN, [])
@@ -66,18 +70,25 @@ export class DynamicMenuService {
   }
 
   private resolveSubMenuComponent(
-    config: DynamicMenuRouteConfig,
+    config: RouteWithMenu,
     subMenuMap: SubMenuMap[],
   ) {
     if (!config.data || !config.data.menu) {
-      return '';
+      return;
     }
 
     const name = config.data.menu.subMenuComponent;
 
     if (typeof name === 'string') {
       const info = subMenuMap.find(m => m.name === name);
-      return info ? info.type : name;
+
+      if (!info) {
+        console.warn(`DynamicMenuService: Could not resolve sub-menu component string ${name}!
+        Please make sure to provide mapping via 'DynamicMenuModule.provideSubMenu()'`);
+        return;
+      }
+
+      return info.type;
     }
 
     return name;
@@ -95,11 +106,16 @@ export class DynamicMenuService {
       const path = parentConfig
         ? parentConfig.fullUrl || [parentConfig.path]
         : [];
+
+      config.data.menu.subMenuComponent = this.resolveSubMenuComponent(
+        config,
+        subMenuMap,
+      );
+
       return {
         ...config,
         // tslint:disable-next-line: no-non-null-assertion
         fullUrl: [...path, config.path!].filter(p => p != null),
-        subMenuComponent: this.resolveSubMenuComponent(config, subMenuMap),
       };
     });
   }

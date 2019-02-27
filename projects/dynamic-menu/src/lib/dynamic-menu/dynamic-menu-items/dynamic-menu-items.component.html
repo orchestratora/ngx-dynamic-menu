@@ -1,1 +1,6 @@
-<ng-container *ngTemplateOutlet="ctx?.tpl; context: ctx?.ctx"></ng-container>
+<ng-container *ngIf="(shouldRender$ | async)">
+  <ng-container
+    *ngComponentOutlet="ctx?.parentConfig?.data?.menu?.subMenuComponent"
+  ></ng-container>
+  <ng-container *ngTemplateOutlet="ctx?.tpl; context: ctx?.ctx"></ng-container>
+</ng-container>

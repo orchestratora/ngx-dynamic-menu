@@ -12,6 +12,6 @@ export class DynamicMenuItemContext extends DynamicMenuTemplateContext {
     public $implicit: DynamicMenuRouteConfig,
     tpl: TemplateRef<any>,
   ) {
-    super(tpl, { $implicit: $implicit.data.menu.children });
+    super(tpl, { $implicit: $implicit.data.menu.children }, $implicit);
   }
 }

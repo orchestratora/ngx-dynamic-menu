@@ -11,10 +11,6 @@ export interface MenuItem {
    */
   icon?: string;
   /**
-   * Make item not a navigation link but only reveal it's children links
-   */
-  justToggleChildren?: true;
-  /**
    * Only show children items if route is being activated
    */
   showChildrenIfActivated?: boolean;
@@ -46,6 +42,7 @@ export interface RouteWithMenu extends Route {
 export interface RoutesWithMenu extends Array<RouteWithMenu> {}
 
 export interface DynamicMenuItem extends MenuItem {
+  subMenuComponent?: Type<any>;
   children: DynamicMenuRouteConfig[];
 }
 
@@ -56,7 +53,6 @@ export interface DynamicDataWithMenu extends DataWithMenu {
 export interface DynamicMenuRouteConfig extends RouteWithMenu {
   data: DynamicDataWithMenu;
   fullUrl: string[];
-  subMenuComponent?: Type<any> | string;
 }
 
 export type DynamicMenuConfigFn = (

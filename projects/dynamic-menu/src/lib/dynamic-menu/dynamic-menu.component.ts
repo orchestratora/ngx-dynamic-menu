@@ -66,7 +66,10 @@ export class DynamicMenuComponent implements OnInit, OnDestroy {
   }
 
   getToggleCtx(config: DynamicMenuRouteConfig, tpl: TemplateRef<any>) {
-    return this.getCtx(config, () => new DynamicMenuToggleContext(config, tpl));
+    return this.getCtx(config, () => {
+      const opened = this.dynamicMenuService.isActive(config.fullUrl);
+      return new DynamicMenuToggleContext(config, tpl, opened);
+    });
   }
 
   private getCtx<T>(key: any, factory: () => T): T {

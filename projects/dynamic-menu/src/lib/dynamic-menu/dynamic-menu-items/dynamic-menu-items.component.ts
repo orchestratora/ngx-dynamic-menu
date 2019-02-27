@@ -4,7 +4,10 @@ import {
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, map, startWith } from 'rxjs/operators';
 
+import { DynamicMenuService } from '../../dynamic-menu.service';
 import { DynamicMenuTemplateContext } from '../context-template';
 
 export interface NgView<T, C = T> {
@@ -22,7 +25,20 @@ export interface NgView<T, C = T> {
 export class DynamicMenuItemsComponent implements OnInit {
   ctx: DynamicMenuTemplateContext | undefined;
 
-  constructor(private vcr: ViewContainerRef) {}
+  navigationEnd$ = this.router.events.pipe(
+    filter(e => e instanceof NavigationEnd),
+  );
+
+  shouldRender$ = this.navigationEnd$.pipe(
+    startWith(null),
+    map(() => this.shouldRender()),
+  );
+
+  constructor(
+    private vcr: ViewContainerRef,
+    private dynamicMenuService: DynamicMenuService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.ctx = this.getTplContext((this.vcr as any)._view);
@@ -40,5 +56,36 @@ export class DynamicMenuItemsComponent implements OnInit {
 
       view = view.parent;
     }
+  }
+
+  private shouldRender() {
+    if (!this.ctx) {
+      return false;
+    }
+
+    const { parentConfig } = this.ctx;
+
+    if (parentConfig) {
+      const {
+        renderAsToggle,
+        showChildrenIfActivated,
+        showChildrenIfChildActivated,
+      } = parentConfig.data.menu;
+
+      if (renderAsToggle) {
+        return true;
+      }
+
+      if (showChildrenIfActivated) {
+        return this.dynamicMenuService.isActive(parentConfig.fullUrl);
+      } else if (showChildrenIfChildActivated) {
+        return (
+          !this.dynamicMenuService.isActive(parentConfig.fullUrl, true) &&
+          this.dynamicMenuService.isActive(parentConfig.fullUrl)
+        );
+      }
+    }
+
+    return true;
   }
 }
