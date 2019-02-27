@@ -110,6 +110,7 @@ describe('DynamicMenuComponent', () => {
       { href: '/path2', label: 'Path 2' },
     ]);
   });
+
   it('should render one level menu', () => {
     const menuService = TestBed.get(
       DynamicMenuService,

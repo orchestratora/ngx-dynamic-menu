@@ -1,6 +1,13 @@
 import { Injectable, Injector } from '@angular/core';
-import { Route, RouteConfigLoadEnd, Router } from '@angular/router';
-import { EMPTY, zip } from 'rxjs';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Route,
+  RouteConfigLoadEnd,
+  Router,
+  Params,
+} from '@angular/router';
+import { combineLatest, EMPTY, zip } from 'rxjs';
 import {
   delay,
   filter,
@@ -8,6 +15,7 @@ import {
   publishBehavior,
   refCount,
   startWith,
+  tap,
 } from 'rxjs/operators';
 
 import { DynamicMenuExtrasToken } from './dynamic-menu-extras';
@@ -28,6 +36,10 @@ export class DynamicMenuService {
     ? this.router.events.pipe(filter(e => e instanceof RouteConfigLoadEnd))
     : EMPTY;
 
+  private navigationEnd$ = this.router.events.pipe(
+    filter(e => e instanceof NavigationEnd),
+  );
+
   private dynamicMenuRoutes$ = this.configChanged$.pipe(
     startWith(null),
     map(() => this.getDynamicMenuRoutes()),
@@ -38,9 +50,18 @@ export class DynamicMenuService {
     map(() => this.getSubMenuMap()),
   );
 
-  private dynamicMenu$ = zip(this.dynamicMenuRoutes$, this.subMenuMap$).pipe(
+  private basicMenu$ = zip(this.dynamicMenuRoutes$, this.subMenuMap$).pipe(
     delay(0),
     map(([routes, subMenuMap]) => this.buildFullUrlTree(routes, subMenuMap)),
+  );
+
+  private dynamicMenu$ = combineLatest(
+    this.basicMenu$,
+    this.navigationEnd$.pipe(startWith(null)),
+  ).pipe(
+    map(([basicMenu]) =>
+      this.updateFullPaths(basicMenu, this.router.routerState.root),
+    ),
     publishBehavior([] as DynamicMenuRouteConfig[]),
     refCount(),
   );
@@ -98,13 +119,60 @@ export class DynamicMenuService {
     return config.path === '**' || !!config.redirectTo;
   }
 
+  private updateFullPaths(
+    menu: DynamicMenuRouteConfig[],
+    route: ActivatedRoute | null,
+  ): DynamicMenuRouteConfig[] {
+    return menu.map(m => {
+      return {
+        ...m,
+        fullUrl: this.applyParams(m.fullPath, route),
+        data: {
+          ...m.data,
+          menu: {
+            ...m.data.menu,
+            children: this.updateFullPaths(
+              m.data.menu.children,
+              route && route.firstChild,
+            ),
+          },
+        },
+      };
+    });
+  }
+
+  private applyParams(path: string[], route: ActivatedRoute | null): string[] {
+    if (!route || !/:/.test(path.join(''))) {
+      return path;
+    }
+
+    const params = this.collectParamsFrom(route);
+
+    return path.map(p =>
+      Object.keys(params).reduce((acc, param) => {
+        return acc.replace(`:${param}`, params[param]);
+      }, p),
+    );
+  }
+
+  private collectParamsFrom(route: ActivatedRoute): Params {
+    let params = route.snapshot.params;
+
+    // Look in first child in case we have params in root but they are in child
+    if (route.firstChild) {
+      params = { ...params, ...route.firstChild.snapshot.params };
+    }
+
+    return params;
+  }
+
   private buildFullUrlTree(
     node: RoutesWithMenu,
     subMenuMap: SubMenuMap[],
   ): DynamicMenuRouteConfig[] {
     return this.buildUrlTree(node, (config, parentConfig) => {
       const path = parentConfig
-        ? parentConfig.fullUrl || [parentConfig.path]
+        ? parentConfig.fullPath || [parentConfig.path]
         : [];
 
       if (config.data && config.data.menu) {
@@ -114,11 +182,14 @@ export class DynamicMenuService {
         );
       }
 
-      return {
-        ...config,
-        // tslint:disable-next-line: no-non-null-assertion
-        fullUrl: [...path, config.path!].filter(p => p != null),
-      };
+      // tslint:disable-next-line: no-non-null-assertion
+      const fullPath: string[] = [...path, config.path!].filter(p => p != null);
+
+      // Setting to `pathUrl` for now.
+      // Will be updated later after navigation.
+      const fullUrl: string[] = fullPath;
+
+      return { ...config, fullPath, fullUrl };
     });
   }
 

@@ -88,6 +88,7 @@ describe('DynamicMenuItemsComponent', () => {
                 tpl,
                 {},
                 {
+                  fullPath: 'full-path' as any,
                   fullUrl: 'full-url' as any,
                   data: {
                     menu: {
@@ -134,6 +135,7 @@ describe('DynamicMenuItemsComponent', () => {
                 tpl,
                 {},
                 {
+                  fullPath: 'full-path' as any,
                   fullUrl: 'full-url' as any,
                   data: {
                     menu: {
@@ -170,6 +172,7 @@ describe('DynamicMenuItemsComponent', () => {
                 tpl,
                 {},
                 {
+                  fullPath: 'full-path' as any,
                   fullUrl: 'full-url' as any,
                   data: {
                     menu: {
@@ -233,6 +236,7 @@ describe('DynamicMenuItemsComponent', () => {
                 tpl,
                 {},
                 {
+                  fullPath: 'full-path' as any,
                   fullUrl: 'full-url' as any,
                   data: {
                     menu: {

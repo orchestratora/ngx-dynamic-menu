@@ -3,7 +3,9 @@
     <ndm-dynamic-menu-items></ndm-dynamic-menu-items>
   </ul>
   <li *ndmDynamicMenuItem="let config; let item = item">
-    <a [routerLink]="config.fullUrl">{{ item.label }}</a>
+    <a [routerLink]="config.fullUrl" routerLinkActive="active">{{
+      item.label
+    }}</a>
     <ndm-dynamic-menu-items></ndm-dynamic-menu-items>
   </li>
   <li *ndmDynamicMenuToggle="let item = item; let ctx = context">

@@ -52,6 +52,15 @@ export interface DynamicDataWithMenu extends DataWithMenu {
 
 export interface DynamicMenuRouteConfig extends RouteWithMenu {
   data: DynamicDataWithMenu;
+  /**
+   * Represents unprocessed full path from root to route.
+   * Only calculated once a router config is loaded.
+   */
+  fullPath: string[];
+  /**
+   * Represents processed full path from root to route.
+   * It updates with every navigation.
+   */
   fullUrl: string[];
 }
 
