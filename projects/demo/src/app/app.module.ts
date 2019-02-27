@@ -7,6 +7,7 @@ import {
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { Path3Component } from './path3.component';
 import { PrintPathComponent } from './print-path/print-path.component';
 
 @NgModule({
@@ -16,7 +17,7 @@ import { PrintPathComponent } from './print-path/print-path.component';
     DefaultDynamicMenuComponentModule,
     AppRoutingModule,
   ],
-  declarations: [AppComponent, PrintPathComponent],
+  declarations: [AppComponent, PrintPathComponent, Path3Component],
   bootstrap: [AppComponent],
   providers: [],
 })

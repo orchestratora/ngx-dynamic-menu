@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { RoutesWithMenu } from 'projects/dynamic-menu/src/lib/types';
 import { DynamicMenuModule } from 'projects/dynamic-menu/src/public_api';
 
+import { Path3Component } from './path3.component';
 import { PrintPathComponent } from './print-path/print-path.component';
 
 const routes: RoutesWithMenu = [
@@ -47,14 +48,19 @@ const routes: RoutesWithMenu = [
     },
     children: [
       {
-        path: 'path6',
-        component: PrintPathComponent,
-        data: { menu: { label: 'Section 6' } },
-      },
-      {
-        path: 'path7',
-        component: PrintPathComponent,
-        data: { menu: { label: 'Section 7' } },
+        path: ':id',
+        children: [
+          {
+            path: 'path6',
+            component: PrintPathComponent,
+            data: { menu: { label: 'Section 6' } },
+          },
+          {
+            path: 'path7',
+            component: PrintPathComponent,
+            data: { menu: { label: 'Section 7' } },
+          },
+        ],
       },
     ],
   },
@@ -64,7 +70,7 @@ const routes: RoutesWithMenu = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [
-    DynamicMenuModule.provideSubMenu('SubMenuForSection3', PrintPathComponent),
+    DynamicMenuModule.provideSubMenu('SubMenuForSection3', Path3Component),
   ],
 })
 export class AppRoutingModule {}
