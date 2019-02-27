@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+# [1.3.0](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.2.1...v1.3.0) (2019-02-27)
+
+
+### Features
+
+* **menu:** add support for `subMenuComponent` ([e5fb388](https://github.com/orchestratora/ngx-dynamic-menu/commit/e5fb388))
+
 ## [1.2.1](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.2.0...v1.2.1) (2019-02-20)
 
 
