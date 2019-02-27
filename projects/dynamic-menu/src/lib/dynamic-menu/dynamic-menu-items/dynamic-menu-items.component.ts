@@ -23,7 +23,7 @@ export interface NgView<T, C = T> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicMenuItemsComponent implements OnInit {
-  ctx: DynamicMenuTemplateContext | undefined;
+  ctx!: DynamicMenuTemplateContext;
 
   navigationEnd$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),
@@ -41,11 +41,13 @@ export class DynamicMenuItemsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.ctx = this.getTplContext((this.vcr as any)._view);
+    const ctx = this.getTplContext((this.vcr as any)._view);
 
-    if (!this.ctx) {
+    if (!ctx) {
       throw Error(`DynamicMenuItemsComponent: Used outside of context!`);
     }
+
+    this.ctx = ctx;
   }
 
   private getTplContext(view: NgView<any> | undefined) {
@@ -59,10 +61,6 @@ export class DynamicMenuItemsComponent implements OnInit {
   }
 
   private shouldRender() {
-    if (!this.ctx) {
-      return false;
-    }
-
     const { parentConfig } = this.ctx;
 
     if (parentConfig) {

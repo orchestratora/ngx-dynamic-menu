@@ -96,7 +96,7 @@ describe('Service: DynamicMenu', () => {
       expect(menu[1].data.menu.label).toBe('Route 2');
     }));
 
-    it('should resolve `subMenuComponent` from map', fakeAsync(() => {
+    it('should resolve `data.menu.subMenuComponent` from map', fakeAsync(() => {
       class Comp1 {}
       class Comp2 {}
 
@@ -141,13 +141,13 @@ describe('Service: DynamicMenu', () => {
 
       expect(menu[0].path).toBe('route1');
       expect(menu[0].data.menu.label).toBe('Route 1');
-      expect(menu[0].subMenuComponent).toBe(Comp1);
+      expect(menu[0].data.menu.subMenuComponent).toBe(Comp1);
 
       const subMenu = menu[0].data.menu.children;
       expect(subMenu.length).toBe(1);
       expect(subMenu[0].path).toBe('route2');
       expect(subMenu[0].data.menu.label).toBe('Route 2');
-      expect(subMenu[0].subMenuComponent).toBe(Comp2);
+      expect(subMenu[0].data.menu.subMenuComponent).toBe(Comp2);
     }));
 
     it('should update menu when `listenForConfigChanges` is `true` and lazy module resolved', fakeAsync(() => {

@@ -107,10 +107,12 @@ export class DynamicMenuService {
         ? parentConfig.fullUrl || [parentConfig.path]
         : [];
 
-      config.data.menu.subMenuComponent = this.resolveSubMenuComponent(
-        config,
-        subMenuMap,
-      );
+      if (config.data && config.data.menu) {
+        config.data.menu.subMenuComponent = this.resolveSubMenuComponent(
+          config,
+          subMenuMap,
+        );
+      }
 
       return {
         ...config,

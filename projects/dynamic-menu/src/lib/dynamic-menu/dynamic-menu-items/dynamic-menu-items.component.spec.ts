@@ -1,8 +1,14 @@
 import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
+import { DynamicMenuService } from '../../dynamic-menu.service';
 import { DynamicMenuTemplateContext } from '../context-template';
 import { DynamicMenuItemsComponent } from './dynamic-menu-items.component';
+
+class DynamicMenuServiceMock {
+  isActive = jasmine.createSpy('isActive spy');
+}
 
 @Component({
   selector: 'ndm-host',
@@ -20,7 +26,11 @@ describe('DynamicMenuItemsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
       declarations: [DynamicMenuItemsComponent, HostComponent],
+      providers: [
+        { provide: DynamicMenuService, useClass: DynamicMenuServiceMock },
+      ],
     });
   });
 
@@ -68,9 +78,194 @@ describe('DynamicMenuItemsComponent', () => {
 
       expect(fixture.nativeElement.textContent).toBe('Tpl: var');
     });
+
+    describe('`config.showChildrenIfActivated`', () => {
+      describe('set to `true`', () => {
+        beforeEach(() => {
+          hostComp.getCtx.and.callFake(
+            (tpl: any) =>
+              new DynamicMenuTemplateContext(
+                tpl,
+                {},
+                {
+                  fullUrl: 'full-url' as any,
+                  data: {
+                    menu: {
+                      showChildrenIfActivated: true,
+                      label: '',
+                      children: [],
+                    },
+                  },
+                },
+              ),
+          );
+        });
+
+        it('should call `dynamicMenuService.isActive()` with `config.fullUrl`', () => {
+          fixture.detectChanges();
+
+          expect(getDynamicMenuService().isActive).toHaveBeenCalledWith(
+            'full-url',
+          );
+        });
+
+        it('should render tpl if `dynamicMenuService.isActive` returns `true`', () => {
+          getDynamicMenuService().isActive.and.returnValue(true);
+
+          fixture.detectChanges();
+
+          expect(fixture.nativeElement.textContent).toBe('Tpl: ');
+        });
+
+        it('should NOT render tpl if `dynamicMenuService.isActive` returns `false`', () => {
+          getDynamicMenuService().isActive.and.returnValue(false);
+
+          fixture.detectChanges();
+
+          expect(fixture.nativeElement.textContent).toBe('');
+        });
+      });
+
+      describe('set to `false`', () => {
+        beforeEach(() => {
+          hostComp.getCtx.and.callFake(
+            (tpl: any) =>
+              new DynamicMenuTemplateContext(
+                tpl,
+                {},
+                {
+                  fullUrl: 'full-url' as any,
+                  data: {
+                    menu: {
+                      showChildrenIfActivated: false,
+                      label: '',
+                      children: [],
+                    },
+                  },
+                },
+              ),
+          );
+        });
+
+        it('should NOT call `dynamicMenuService.isActive()`', () => {
+          fixture.detectChanges();
+
+          expect(getDynamicMenuService().isActive).not.toHaveBeenCalled();
+        });
+
+        it('should always render tpl', () => {
+          fixture.detectChanges();
+
+          expect(fixture.nativeElement.textContent).toBe('Tpl: ');
+        });
+      });
+    });
+
+    describe('`config.showChildrenIfChildActivated`', () => {
+      describe('set to `true`', () => {
+        beforeEach(() => {
+          hostComp.getCtx.and.callFake(
+            (tpl: any) =>
+              new DynamicMenuTemplateContext(
+                tpl,
+                {},
+                {
+                  fullUrl: 'full-url' as any,
+                  data: {
+                    menu: {
+                      showChildrenIfChildActivated: true,
+                      label: '',
+                      children: [],
+                    },
+                  },
+                },
+              ),
+          );
+        });
+
+        it('should call `dynamicMenuService.isActive()` with `config.fullUrl, true`', () => {
+          fixture.detectChanges();
+
+          expect(getDynamicMenuService().isActive).toHaveBeenCalledWith(
+            'full-url',
+            true,
+          );
+        });
+
+        it('should call `dynamicMenuService.isActive()` with `config.fullUrl`', () => {
+          fixture.detectChanges();
+
+          expect(getDynamicMenuService().isActive).toHaveBeenCalledWith(
+            'full-url',
+          );
+        });
+
+        it('should render tpl if `dynamicMenuService.isActive` first returns `false` and second `true`', () => {
+          getDynamicMenuService().isActive.and.returnValues(false, true);
+
+          fixture.detectChanges();
+
+          expect(fixture.nativeElement.textContent).toBe('Tpl: ');
+        });
+
+        it('should NOT render tpl if `dynamicMenuService.isActive` first returns `true`', () => {
+          getDynamicMenuService().isActive.and.returnValue(false);
+
+          fixture.detectChanges();
+
+          expect(fixture.nativeElement.textContent).toBe('');
+        });
+
+        it('should NOT render tpl if `dynamicMenuService.isActive` second returns `false`', () => {
+          getDynamicMenuService().isActive.and.returnValues(false, false);
+
+          fixture.detectChanges();
+
+          expect(fixture.nativeElement.textContent).toBe('');
+        });
+      });
+
+      describe('set to `false`', () => {
+        beforeEach(() => {
+          hostComp.getCtx.and.callFake(
+            (tpl: any) =>
+              new DynamicMenuTemplateContext(
+                tpl,
+                {},
+                {
+                  fullUrl: 'full-url' as any,
+                  data: {
+                    menu: {
+                      showChildrenIfChildActivated: false,
+                      label: '',
+                      children: [],
+                    },
+                  },
+                },
+              ),
+          );
+        });
+
+        it('should NOT call `dynamicMenuService.isActive()`', () => {
+          fixture.detectChanges();
+
+          expect(getDynamicMenuService().isActive).not.toHaveBeenCalled();
+        });
+
+        it('should always render tpl', () => {
+          fixture.detectChanges();
+
+          expect(fixture.nativeElement.textContent).toBe('Tpl: ');
+        });
+      });
+    });
   });
 });
 
 function overrideHostTpl(tpl: string) {
   TestBed.overrideTemplate(HostComponent, tpl);
+}
+
+function getDynamicMenuService(): DynamicMenuServiceMock {
+  return TestBed.get(DynamicMenuService);
 }

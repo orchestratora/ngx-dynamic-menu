@@ -13,6 +13,7 @@ import { DynamicMenuComponent } from './dynamic-menu.component';
 
 class DynamicMenuServiceMock {
   getMenu = jasmine.createSpy('getMenu spy');
+  isActive = jasmine.createSpy('isActive spy');
 }
 
 @Component({
