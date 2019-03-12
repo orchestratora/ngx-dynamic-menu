@@ -210,7 +210,7 @@ describe('Service: DynamicMenu', () => {
 
       expect(menu[1].path).toBe('child');
       expect(menu[1].data.menu.label).toBe('Child');
-      expect(menu[1].data.menu.children.length).toBe(0); // Not yet loaded
+      expect(menu[1].data.menu.children).toBeUndefined(); // Not yet loaded
 
       callback.calls.reset();
 
