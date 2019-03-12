@@ -1,37 +1,63 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector, OnDestroy } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationEnd,
+  Params,
   Route,
   RouteConfigLoadEnd,
   Router,
-  Params,
 } from '@angular/router';
-import { combineLatest, EMPTY, zip } from 'rxjs';
+import { combineLatest, EMPTY, Subject, zip } from 'rxjs';
 import {
   delay,
   filter,
   map,
   publishBehavior,
   refCount,
+  scan,
   startWith,
-  tap,
+  takeUntil,
 } from 'rxjs/operators';
 
 import { DynamicMenuExtrasToken } from './dynamic-menu-extras';
 import { DYNAMIC_MENU_ROUTES_TOKEN } from './dynamic-menu-routes';
 import { SUB_MENU_MAP_TOKEN, SubMenuMap } from './sub-menu-map-provider';
 import {
-  DynamicMenuConfigFn,
+  DynamicMenuConfigResolver,
   DynamicMenuRouteConfig,
   RoutesWithMenu,
   RouteWithMenu,
 } from './types';
 
+export interface CustomMenu {
+  location: string[];
+  mode: 'insert' | 'start' | 'end';
+  menu: RoutesWithMenu;
+  used?: boolean;
+}
+
+export type AnyMenuRoute = RouteWithMenu | DynamicMenuRouteConfig;
+
+export type MenuVisitor<T> = (
+  node: AnyMenuRoute,
+  parentNode?: AnyMenuRoute,
+  acc?: AnyMenuRoute[],
+) => { node: T; acc?: T[] };
+
 @Injectable({
   providedIn: 'root',
 })
-export class DynamicMenuService {
+export class DynamicMenuService implements OnDestroy {
+  private destroyed$ = new Subject<void>();
+
+  private addCustomMenu$ = new Subject<CustomMenu[]>();
+
+  private customMenu$ = this.addCustomMenu$.pipe(
+    scan((acc, customMenu) => [...acc, ...customMenu]),
+    publishBehavior<CustomMenu[]>([]),
+    refCount(),
+  );
+
   private configChanged$ = this.dynamicMenuExtrasToken.listenForConfigChanges
     ? this.router.events.pipe(filter(e => e instanceof RouteConfigLoadEnd))
     : EMPTY;
@@ -55,13 +81,21 @@ export class DynamicMenuService {
     map(([routes, subMenuMap]) => this.buildFullUrlTree(routes, subMenuMap)),
   );
 
-  private dynamicMenu$ = combineLatest(
+  private fullMenu$ = combineLatest(
     this.basicMenu$,
+    this.customMenu$,
+    this.subMenuMap$,
+  ).pipe(
+    map(([basicMenu, customMenu, subMenuMap]) =>
+      this.resolveWithCustomMenu(basicMenu, customMenu, subMenuMap),
+    ),
+  );
+
+  private dynamicMenu$ = combineLatest(
+    this.fullMenu$,
     this.navigationEnd$.pipe(startWith(null)),
   ).pipe(
-    map(([basicMenu]) =>
-      this.updateFullPaths(basicMenu, this.router.routerState.root),
-    ),
+    map(([menu]) => this.updateFullPaths(menu, this.router.routerState.root)),
     publishBehavior([] as DynamicMenuRouteConfig[]),
     refCount(),
   );
@@ -70,7 +104,13 @@ export class DynamicMenuService {
     private injector: Injector,
     private router: Router,
     private dynamicMenuExtrasToken: DynamicMenuExtrasToken,
-  ) {}
+  ) {
+    this.dynamicMenu$.pipe(takeUntil(this.destroyed$)).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+  }
 
   getMenu() {
     return this.dynamicMenu$;
@@ -80,7 +120,37 @@ export class DynamicMenuService {
     return this.router.isActive(this.router.createUrlTree(fullPath), exact);
   }
 
-  private getDynamicMenuRoutes() {
+  addMenuAfter(fullPath: string[], menu: RouteWithMenu | RoutesWithMenu) {
+    this.addCustomMenu$.next([
+      {
+        location: fullPath,
+        mode: 'insert',
+        menu: Array.isArray(menu) ? menu : [menu],
+      },
+    ]);
+  }
+
+  addMenuToStart(fullPath: string[], menu: RouteWithMenu | RoutesWithMenu) {
+    this.addCustomMenu$.next([
+      {
+        location: fullPath,
+        mode: 'start',
+        menu: Array.isArray(menu) ? menu : [menu],
+      },
+    ]);
+  }
+
+  addMenuToEnd(fullPath: string[], menu: RouteWithMenu | RoutesWithMenu) {
+    this.addCustomMenu$.next([
+      {
+        location: fullPath,
+        mode: 'end',
+        menu: Array.isArray(menu) ? menu : [menu],
+      },
+    ]);
+  }
+
+  private getDynamicMenuRoutes(): RoutesWithMenu {
     return this.injector
       .get(DYNAMIC_MENU_ROUTES_TOKEN, [])
       .reduce((acc, routes) => [...acc, ...routes], this.router.config);
@@ -123,6 +193,10 @@ export class DynamicMenuService {
     menu: DynamicMenuRouteConfig[],
     route: ActivatedRoute | null,
   ): DynamicMenuRouteConfig[] {
+    if (!menu) {
+      return menu;
+    }
+
     return menu.map(m => {
       return {
         ...m,
@@ -166,106 +240,230 @@ export class DynamicMenuService {
     return params;
   }
 
+  private resolveWithCustomMenu(
+    basicMenu: DynamicMenuRouteConfig[],
+    customMenu: CustomMenu[],
+    subMenuMap: SubMenuMap[],
+  ) {
+    return this.combineMenuWithCustom(
+      basicMenu,
+      customMenu,
+      (config, parentConfig) =>
+        this.resolveMenuConfig(subMenuMap, config, parentConfig),
+    );
+  }
+
   private buildFullUrlTree(
     node: RoutesWithMenu,
     subMenuMap: SubMenuMap[],
   ): DynamicMenuRouteConfig[] {
-    return this.buildUrlTree(node, (config, parentConfig) => {
-      const path = parentConfig
-        ? parentConfig.fullPath || [parentConfig.path]
-        : [];
-
-      if (config.data && config.data.menu) {
-        config.data.menu.subMenuComponent = this.resolveSubMenuComponent(
-          config,
-          subMenuMap,
-        );
-      }
-
-      // tslint:disable-next-line: no-non-null-assertion
-      const fullPath: string[] = [...path, config.path!].filter(p => p != null);
-
-      // Setting to `pathUrl` for now.
-      // Will be updated later after navigation.
-      const fullUrl: string[] = fullPath;
-
-      return { ...config, fullPath, fullUrl };
-    });
-  }
-
-  private buildUrlTree(
-    node: (Route | DynamicMenuRouteConfig)[],
-    fn: DynamicMenuConfigFn,
-  ): DynamicMenuRouteConfig[] {
-    const getConfig = (
-      config: DynamicMenuRouteConfig,
-      parentConfig?: DynamicMenuRouteConfig,
-    ) => {
-      return fn(config, parentConfig);
-    };
-    return this._buildUrlTree(node, getConfig);
-  }
-
-  private _buildUrlTree(
-    node: (Route | DynamicMenuRouteConfig)[],
-    fn: DynamicMenuConfigFn,
-    parentNode?: DynamicMenuRouteConfig,
-  ): DynamicMenuRouteConfig[] {
-    if (!node) {
-      return [];
-    }
-
-    const usedPaths = {} as any;
-
-    return node.reduce(
-      (paths, config) => {
-        if (config.path != null) {
-          if (config.path in usedPaths) {
-            return paths;
-          }
-          usedPaths[config.path] = true;
-        }
-
-        const newNode = fn(config as DynamicMenuRouteConfig, parentNode);
-
-        if (!isConfigMenuItem(config) || this.shouldSkipConfig(config)) {
-          return [...paths, ...this.buildUrlTreeChild(config, fn, newNode)];
-        } else if (typeof newNode === 'object') {
-          newNode.data.menu.children = this.buildUrlTreeChild(
-            config,
-            fn,
-            newNode,
-          );
-          return [...paths, newNode];
-        } else {
-          return [
-            ...paths,
-            newNode,
-            ...this.buildUrlTreeChild(config, fn, newNode),
-          ];
-        }
-      },
-      [] as DynamicMenuRouteConfig[],
+    return this.buildUrlTree(node, (config, parentConfig) =>
+      this.resolveMenuConfig(subMenuMap, config, parentConfig),
     );
   }
 
-  private buildUrlTreeChild(
-    config: Route | DynamicMenuRouteConfig,
-    fn: DynamicMenuConfigFn,
-    parentNode: DynamicMenuRouteConfig,
-  ): DynamicMenuRouteConfig[] {
-    const children =
-      config.children || getLoadedConfig(config) || config.loadChildren;
+  private resolveMenuConfig(
+    subMenuMap: SubMenuMap[],
+    config: RouteWithMenu,
+    parentConfig?: DynamicMenuRouteConfig,
+  ): DynamicMenuRouteConfig {
+    const path = parentConfig
+      ? parentConfig.fullPath || [parentConfig.path]
+      : [];
 
-    if (Array.isArray(children)) {
-      return this._buildUrlTree(
-        children as DynamicMenuRouteConfig[],
-        fn,
-        parentNode,
-      );
+    const subMenuComponent =
+      config.data && config.data.menu
+        ? this.resolveSubMenuComponent(config, subMenuMap)
+        : undefined;
+
+    // tslint:disable-next-line: no-non-null-assertion
+    const fullPath: string[] = [...path, config.path!].filter(p => p != null);
+
+    // Setting to `pathUrl` for now.
+    // Will be updated later after navigation.
+    const fullUrl: string[] = fullPath;
+
+    return {
+      ...config,
+      fullPath,
+      fullUrl,
+      data: {
+        ...config.data,
+        menu: {
+          label: '',
+          children: undefined as any,
+          ...(config.data && config.data.menu),
+          subMenuComponent,
+        },
+      },
+    };
+  }
+
+  private buildUrlTree(
+    node: (RouteWithMenu | DynamicMenuRouteConfig)[],
+    fn: DynamicMenuConfigResolver,
+  ): DynamicMenuRouteConfig[] {
+    return this.visitMenu(node, (config, configParent) => {
+      return {
+        node: fn(
+          config as DynamicMenuRouteConfig,
+          configParent as DynamicMenuRouteConfig,
+        ),
+      };
+    });
+  }
+
+  private visitMenu<T extends AnyMenuRoute>(
+    nodes: AnyMenuRoute[],
+    cb: MenuVisitor<T>,
+    parentNode?: AnyMenuRoute,
+  ): T[] {
+    if (!nodes) {
+      return [];
     }
 
-    return [];
+    return nodes.reduce(
+      (acc, node) => {
+        const shouldSkip =
+          !isConfigMenuItem(node) || this.shouldSkipConfig(node);
+
+        const res = cb(node, parentNode, acc);
+
+        const children: unknown =
+          getMenuChildren(node) ||
+          node.children ||
+          getLoadedConfig(node) ||
+          node.loadChildren;
+
+        if (Array.isArray(children)) {
+          if (shouldSkip && parentNode && isConfigMenuItem(parentNode)) {
+            this.visitMenuChildren(parentNode, children, cb, res.node);
+          } else if (isConfigMenuItem(res.node)) {
+            this.visitMenuChildren(res.node, children, cb);
+          }
+        }
+
+        if (!shouldSkip) {
+          return res.acc ? res.acc : [...acc, res.node];
+        } else {
+          return acc;
+        }
+      },
+      [] as T[],
+    );
+  }
+
+  private visitMenuChildren(
+    node: AnyMenuRoute,
+    children: AnyMenuRoute[],
+    cb: MenuVisitor<AnyMenuRoute>,
+    parentNode: AnyMenuRoute = node,
+  ) {
+    const newChildren = this.visitMenu(children, cb, parentNode) as any;
+
+    if (!getMenuChildren(node) && newChildren) {
+      setMenuChildren(node, newChildren);
+    }
+
+    return node;
+  }
+
+  private combineMenuWithCustom(
+    basicMenu: DynamicMenuRouteConfig[],
+    customMenu: CustomMenu[],
+    fn: DynamicMenuConfigResolver,
+  ): DynamicMenuRouteConfig[] {
+    if (!customMenu.length) {
+      return basicMenu;
+    }
+
+    return this.visitMenu(basicMenu, (node, parentNode, nodes) => {
+      const newNodes = customMenu.reduce(
+        (acc, customItem) => {
+          if (customItem.used) {
+            return acc;
+          }
+
+          const isStaticMode =
+            customItem.mode === 'start' || customItem.mode === 'end';
+
+          const isLocationMatch = isStaticMode
+            ? acc.some(n => this.isMenuMatch(customItem, n))
+            : this.isMenuMatch(customItem, node);
+
+          if (!isLocationMatch) {
+            return acc;
+          }
+
+          const children = isConfigMenuItem(parentNode)
+            ? getMenuChildren(parentNode) || []
+            : acc;
+
+          const idxChildren =
+            isStaticMode && !isConfigMenuItem(parentNode)
+              ? basicMenu
+              : children;
+
+          const idx = idxChildren.findIndex(c => c === node);
+
+          if (
+            idx === -1 ||
+            (customItem.mode === 'end' && idx !== idxChildren.length - 1)
+          ) {
+            return acc;
+          }
+
+          customItem.used = true;
+
+          const menu = customItem.menu.map(m => {
+            const p = {
+              ...parentNode,
+              fullPath: (node as any).fullPath.slice(0, -1),
+            };
+            return fn(m as any, p as any);
+          });
+
+          let newChildren = children;
+
+          switch (customItem.mode) {
+            case 'insert':
+              newChildren = [
+                ...children.slice(0, idx + 1),
+                ...menu,
+                ...children.slice(idx + 1),
+              ];
+              break;
+            case 'start':
+              newChildren = [...menu, ...children];
+              break;
+            case 'end':
+              newChildren = [...children, ...menu];
+              break;
+          }
+
+          if (isConfigMenuItem(parentNode)) {
+            setMenuChildren(
+              parentNode,
+              newChildren as DynamicMenuRouteConfig[],
+            );
+            return acc;
+          } else {
+            return newChildren;
+          }
+        },
+        [...(nodes || []), node] as AnyMenuRoute[],
+      );
+
+      return { node, acc: newNodes };
+    }) as any;
+  }
+
+  private isMenuMatch(menu: CustomMenu, node: AnyMenuRoute): boolean {
+    return (
+      'fullPath' in node &&
+      node.fullPath.length === menu.location.length &&
+      node.fullPath.every((p, i) => menu.location[i] === p)
+    );
   }
 }
 
@@ -273,6 +471,23 @@ function getLoadedConfig(config: any) {
   return config._loadedConfig && config._loadedConfig.routes;
 }
 
-function isConfigMenuItem(config: Route): config is DynamicMenuRouteConfig {
+function isConfigMenuItem(config?: Route): config is RouteWithMenu {
   return config && config.data && config.data.menu;
+}
+
+function getMenuChildren(
+  config?: RouteWithMenu,
+): DynamicMenuRouteConfig[] | undefined {
+  return isConfigMenuItem(config) && config.data && config.data.menu
+    ? (config.data.menu as any).children
+    : undefined;
+}
+
+function setMenuChildren(
+  config: RouteWithMenu,
+  children: DynamicMenuRouteConfig[],
+) {
+  if (isConfigMenuItem(config) && config.data && config.data.menu) {
+    (config.data.menu as any).children = children;
+  }
 }
