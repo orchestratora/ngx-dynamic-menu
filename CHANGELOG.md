@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+# [1.5.0](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.4.0...v1.5.0) (2019-03-12)
+
+
+### Features
+
+* **menu:** allow to add custom menu links ([5200932](https://github.com/orchestratora/ngx-dynamic-menu/commit/5200932))
+
 # [1.4.0](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.3.0...v1.4.0) (2019-02-27)
 
 
