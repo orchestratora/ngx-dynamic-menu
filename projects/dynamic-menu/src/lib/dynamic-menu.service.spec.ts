@@ -245,6 +245,309 @@ describe('Service: DynamicMenu', () => {
       expect(child1[0].data.menu.label).toBe('Sub menu');
     }));
   });
+
+  describe('addMenuAfter() method', () => {
+    beforeEach(() => {
+      const routes: RoutesWithMenu = [
+        {
+          path: '',
+          component: TestComponent,
+          data: { menu: { label: 'Main' } },
+        },
+        {
+          path: 'child',
+          data: { menu: { label: 'Child' } },
+          children: [
+            {
+              path: 'child1',
+              component: TestComponent,
+              data: { menu: { label: 'Child1' } },
+            },
+            {
+              path: 'child2',
+              component: TestComponent,
+              data: { menu: { label: 'Child2' } },
+            },
+          ],
+        },
+      ];
+
+      @NgModule({
+        imports: [TestModule, RouterTestingModule.withRoutes(routes)],
+      })
+      class TestRootModule {}
+
+      TestBed.configureTestingModule({
+        imports: [TestRootModule],
+      });
+    });
+
+    it('should insert custom menu after specified link', fakeAsync(() => {
+      const callback = jasmine.createSpy('callback');
+
+      getService().addMenuAfter(['child', 'child1'], {
+        path: 'custom',
+        data: { menu: { label: 'Custom' } },
+      });
+
+      getService()
+        .getMenu()
+        .pipe(untilDestroyed)
+        .subscribe(callback);
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const menu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(menu.length).toBe(2);
+
+      const child = menu[1].data.menu.children;
+
+      expect(child.length).toBe(3);
+      expect(child[0].path).toBe('child1');
+      expect(child[1].path).toBe('custom');
+      expect(child[2].path).toBe('child2');
+    }));
+
+    it('should update menu dynamically', fakeAsync(() => {
+      const callback = jasmine.createSpy('callback');
+
+      getService()
+        .getMenu()
+        .pipe(untilDestroyed)
+        .subscribe(callback);
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const menu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(menu.length).toBe(2);
+
+      callback.calls.reset();
+
+      getService().addMenuAfter([''], {
+        path: 'custom',
+        data: { menu: { label: 'Custom' } },
+      });
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const newMenu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(newMenu.length).toBe(3);
+    }));
+  });
+
+  describe('addMenuToStart() method', () => {
+    beforeEach(() => {
+      const routes: RoutesWithMenu = [
+        {
+          path: '',
+          component: TestComponent,
+          data: { menu: { label: 'Main' } },
+        },
+        {
+          path: 'child',
+          data: { menu: { label: 'Child' } },
+          children: [
+            {
+              path: 'child1',
+              component: TestComponent,
+              data: { menu: { label: 'Child1' } },
+            },
+            {
+              path: 'child2',
+              component: TestComponent,
+              data: { menu: { label: 'Child2' } },
+            },
+          ],
+        },
+      ];
+
+      @NgModule({
+        imports: [TestModule, RouterTestingModule.withRoutes(routes)],
+      })
+      class TestRootModule {}
+
+      TestBed.configureTestingModule({
+        imports: [TestRootModule],
+      });
+    });
+
+    it('should insert custom menu to start of link list', fakeAsync(() => {
+      const callback = jasmine.createSpy('callback');
+
+      getService().addMenuToStart(['child', 'child2'], {
+        path: 'custom',
+        data: { menu: { label: 'Custom' } },
+      });
+
+      getService()
+        .getMenu()
+        .pipe(untilDestroyed)
+        .subscribe(callback);
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const menu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(menu.length).toBe(2);
+
+      const child = menu[1].data.menu.children;
+
+      expect(child.length).toBe(3);
+      expect(child[0].path).toBe('custom');
+      expect(child[1].path).toBe('child1');
+      expect(child[2].path).toBe('child2');
+    }));
+
+    it('should update menu dynamically', fakeAsync(() => {
+      const callback = jasmine.createSpy('callback');
+
+      getService()
+        .getMenu()
+        .pipe(untilDestroyed)
+        .subscribe(callback);
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const menu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(menu.length).toBe(2);
+
+      callback.calls.reset();
+
+      getService().addMenuToStart([''], {
+        path: 'custom',
+        data: { menu: { label: 'Custom' } },
+      });
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const newMenu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(newMenu.length).toBe(3);
+    }));
+  });
+
+  describe('addMenuToEnd() method', () => {
+    beforeEach(() => {
+      const routes: RoutesWithMenu = [
+        {
+          path: '',
+          component: TestComponent,
+          data: { menu: { label: 'Main' } },
+        },
+        {
+          path: 'child',
+          data: { menu: { label: 'Child' } },
+          children: [
+            {
+              path: 'child1',
+              component: TestComponent,
+              data: { menu: { label: 'Child1' } },
+            },
+            {
+              path: 'child2',
+              component: TestComponent,
+              data: { menu: { label: 'Child2' } },
+            },
+          ],
+        },
+      ];
+
+      @NgModule({
+        imports: [TestModule, RouterTestingModule.withRoutes(routes)],
+      })
+      class TestRootModule {}
+
+      TestBed.configureTestingModule({
+        imports: [TestRootModule],
+      });
+    });
+
+    it('should insert custom menu to start of link list', fakeAsync(() => {
+      const callback = jasmine.createSpy('callback');
+
+      getService().addMenuToEnd(['child', 'child1'], {
+        path: 'custom',
+        data: { menu: { label: 'Custom' } },
+      });
+
+      getService()
+        .getMenu()
+        .pipe(untilDestroyed)
+        .subscribe(callback);
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const menu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(menu.length).toBe(2);
+
+      const child = menu[1].data.menu.children;
+
+      expect(child.length).toBe(3);
+      expect(child[0].path).toBe('child1');
+      expect(child[1].path).toBe('child2');
+      expect(child[2].path).toBe('custom');
+    }));
+
+    it('should update menu dynamically', fakeAsync(() => {
+      const callback = jasmine.createSpy('callback');
+
+      getService()
+        .getMenu()
+        .pipe(untilDestroyed)
+        .subscribe(callback);
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const menu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(menu.length).toBe(2);
+
+      callback.calls.reset();
+
+      getService().addMenuToEnd([''], {
+        path: 'custom',
+        data: { menu: { label: 'Custom' } },
+      });
+
+      tick();
+
+      expect(callback).toHaveBeenCalled();
+
+      const newMenu = callback.calls.mostRecent()
+        .args[0] as DynamicMenuRouteConfig[];
+
+      expect(newMenu.length).toBe(3);
+    }));
+  });
 });
 
 function getService(): DynamicMenuService {
