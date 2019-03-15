@@ -351,18 +351,9 @@ export class DynamicMenuService implements OnDestroy {
                 ? [...res.acc, ...childrenInRoot]
                 : [...acc, ...childrenInRoot];
             }
-          } else {
-            if (isConfigMenuItem(res.node)) {
-              this.visitMenuChildren(res.node, children, cb);
-            }
-            return res.acc ? res.acc : [...acc, res.node];
+          } else if (isConfigMenuItem(res.node)) {
+            this.visitMenuChildren(res.node, children, cb);
           }
-
-          // if (shouldSkip && parentNode && isConfigMenuItem(parentNode)) {
-          //   this.visitMenuChildren(parentNode, children, cb, res.node);
-          // } else if (isConfigMenuItem(res.node)) {
-          //   this.visitMenuChildren(res.node, children, cb);
-          // }
         }
 
         if (!shouldSkip) {
