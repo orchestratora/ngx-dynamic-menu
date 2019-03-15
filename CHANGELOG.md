@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+## [1.5.1](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.0...v1.5.1) (2019-03-15)
+
+
+### Bug Fixes
+
+* **custom-menu:** allow root-level abstract menu ([aeb6785](https://github.com/orchestratora/ngx-dynamic-menu/commit/aeb6785))
+
 # [1.5.0](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.4.0...v1.5.0) (2019-03-12)
 
 
