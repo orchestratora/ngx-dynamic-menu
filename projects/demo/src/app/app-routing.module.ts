@@ -64,6 +64,21 @@ const routes: RoutesWithMenu = [
       },
     ],
   },
+  {
+    path: 'path4',
+    children: [
+      {
+        path: 'path1',
+        component: PrintPathComponent,
+        data: { menu: { label: 'Section 4.1' } },
+      },
+      {
+        path: 'path2',
+        component: PrintPathComponent,
+        data: { menu: { label: 'Section 4.2' } },
+      },
+    ],
+  },
 ];
 
 @NgModule({

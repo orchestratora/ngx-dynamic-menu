@@ -336,11 +336,33 @@ export class DynamicMenuService implements OnDestroy {
           node.loadChildren;
 
         if (Array.isArray(children)) {
-          if (shouldSkip && parentNode && isConfigMenuItem(parentNode)) {
-            this.visitMenuChildren(parentNode, children, cb, res.node);
-          } else if (isConfigMenuItem(res.node)) {
-            this.visitMenuChildren(res.node, children, cb);
+          if (shouldSkip) {
+            if (isConfigMenuItem(parentNode)) {
+              this.visitMenuChildren(parentNode, children, cb, res.node);
+              return acc;
+            } else if (isConfigMenuItem(res.node)) {
+              const childrenInRoot = this.visitMenuChildren(
+                res.node,
+                children,
+                cb,
+              ) as T[];
+
+              return res.acc
+                ? [...res.acc, ...childrenInRoot]
+                : [...acc, ...childrenInRoot];
+            }
+          } else {
+            if (isConfigMenuItem(res.node)) {
+              this.visitMenuChildren(res.node, children, cb);
+            }
+            return res.acc ? res.acc : [...acc, res.node];
           }
+
+          // if (shouldSkip && parentNode && isConfigMenuItem(parentNode)) {
+          //   this.visitMenuChildren(parentNode, children, cb, res.node);
+          // } else if (isConfigMenuItem(res.node)) {
+          //   this.visitMenuChildren(res.node, children, cb);
+          // }
         }
 
         if (!shouldSkip) {
@@ -358,14 +380,14 @@ export class DynamicMenuService implements OnDestroy {
     children: AnyMenuRoute[],
     cb: MenuVisitor<AnyMenuRoute>,
     parentNode: AnyMenuRoute = node,
-  ) {
+  ): AnyMenuRoute[] {
     const newChildren = this.visitMenu(children, cb, parentNode) as any;
 
     if (!getMenuChildren(node) && newChildren) {
       setMenuChildren(node, newChildren);
     }
 
-    return node;
+    return newChildren || [];
   }
 
   private combineMenuWithCustom(
@@ -418,7 +440,7 @@ export class DynamicMenuService implements OnDestroy {
           const menu = customItem.menu.map(m => {
             const p = {
               ...parentNode,
-              fullPath: (node as any).fullPath.slice(0, -1),
+              fullPath: customItem.location.slice(0, -1),
             };
             return fn(m as any, p as any);
           });
