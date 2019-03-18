@@ -1,4 +1,4 @@
-import { InjectionToken, Provider } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Provider } from '@angular/core';
 
 /**
  * Extra configuration for {@link DynamicMenuModule}
@@ -19,19 +19,30 @@ export interface DynamicMenuExtras {
  * DI token that hold extra configuration
  * @internal
  */
-export class DynamicMenuExtrasToken implements DynamicMenuExtras {
-  constructor(public listenForConfigChanges = false) {}
+export const DynamicMenuExtrasToken = new InjectionToken<DynamicMenuExtras>(
+  'DynamicMenuExtrasToken',
+);
+
+/**
+ * @internal
+ */
+@Injectable({ providedIn: 'root' })
+export class DynamicMenuExtrasService implements DynamicMenuExtras {
+  listenForConfigChanges = this.extras.listenForConfigChanges;
+
+  constructor(
+    @Inject(DynamicMenuExtrasToken)
+    private extras: DynamicMenuExtras = { listenForConfigChanges: false },
+  ) {}
 }
 
 /**
  * Helper function to provide {@link DYNAMIC_MENU_EXTRAS_TOKEN}
  * @internal
  */
-export function provideDynamicMenuExtras(
-  extras: DynamicMenuExtras = {},
-): Provider {
+export function provideDynamicMenuExtras(extras?: DynamicMenuExtras): Provider {
   return {
     provide: DynamicMenuExtrasToken,
-    useValue: new DynamicMenuExtrasToken(extras.listenForConfigChanges),
+    useValue: extras,
   };
 }

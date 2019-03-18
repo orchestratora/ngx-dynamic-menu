@@ -19,7 +19,7 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 
-import { DynamicMenuExtrasToken } from './dynamic-menu-extras';
+import { DynamicMenuExtrasService } from './dynamic-menu-extras';
 import { DYNAMIC_MENU_ROUTES_TOKEN } from './dynamic-menu-routes';
 import { SUB_MENU_MAP_TOKEN, SubMenuMap } from './sub-menu-map-provider';
 import {
@@ -58,7 +58,7 @@ export class DynamicMenuService implements OnDestroy {
     refCount(),
   );
 
-  private configChanged$ = this.dynamicMenuExtrasToken.listenForConfigChanges
+  private configChanged$ = this.dynamicMenuExtrasService.listenForConfigChanges
     ? this.router.events.pipe(filter(e => e instanceof RouteConfigLoadEnd))
     : EMPTY;
 
@@ -103,7 +103,7 @@ export class DynamicMenuService implements OnDestroy {
   constructor(
     private injector: Injector,
     private router: Router,
-    private dynamicMenuExtrasToken: DynamicMenuExtrasToken,
+    private dynamicMenuExtrasService: DynamicMenuExtrasService,
   ) {
     this.dynamicMenu$.pipe(takeUntil(this.destroyed$)).subscribe();
   }
