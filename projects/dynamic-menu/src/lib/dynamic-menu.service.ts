@@ -91,11 +91,13 @@ export class DynamicMenuService implements OnDestroy {
     ),
   );
 
-  private dynamicMenu$ = combineLatest(
-    this.fullMenu$,
-    this.navigationEnd$.pipe(startWith(null)),
-  ).pipe(
-    map(([menu]) => this.updateFullPaths(menu, this.router.routerState.root)),
+  private params$ = this.navigationEnd$.pipe(
+    startWith(null),
+    map(() => this.collectAllParams(this.router.routerState.root)),
+  );
+
+  private dynamicMenu$ = combineLatest(this.fullMenu$, this.params$).pipe(
+    map(([menu, params]) => this.updateFullPaths(menu, params)),
     publishBehavior([] as DynamicMenuRouteConfig[]),
     refCount(),
   );
@@ -191,7 +193,7 @@ export class DynamicMenuService implements OnDestroy {
 
   private updateFullPaths(
     menu: DynamicMenuRouteConfig[],
-    route: ActivatedRoute | null,
+    params: Params,
   ): DynamicMenuRouteConfig[] {
     if (!menu) {
       return menu;
@@ -200,42 +202,34 @@ export class DynamicMenuService implements OnDestroy {
     return menu.map(m => {
       return {
         ...m,
-        fullUrl: this.applyParams(m.fullPath, route),
+        fullUrl: this.applyParams(m.fullPath, params),
         data: {
           ...m.data,
           menu: {
             ...m.data.menu,
-            children: this.updateFullPaths(
-              m.data.menu.children,
-              route && route.firstChild,
-            ),
+            children: this.updateFullPaths(m.data.menu.children, params),
           },
         },
       };
     });
   }
 
-  private applyParams(path: string[], route: ActivatedRoute | null): string[] {
-    if (!route || !/:/.test(path.join(''))) {
-      return path;
+  private applyParams(paths: string[], params: Params): string[] {
+    if (!/:/.test(paths.join(''))) {
+      return paths;
     }
 
-    const params = this.collectParamsFrom(route);
-
-    return path.map(p =>
-      Object.keys(params).reduce((acc, param) => {
-        return acc.replace(`:${param}`, params[param]);
-      }, p),
+    return paths.map(path =>
+      path.startsWith(':') ? params[path.slice(1)] || path : path,
     );
   }
 
-  private collectParamsFrom(route: ActivatedRoute): Params {
+  private collectAllParams(route: ActivatedRoute): Params {
     let params = route.snapshot.params;
 
-    // Look in first child in case we have params in root but they are in child
-    if (route.firstChild) {
-      params = { ...params, ...route.firstChild.snapshot.params };
-    }
+    route.children.forEach(
+      child => (params = { ...params, ...this.collectAllParams(child) }),
+    );
 
     return params;
   }
