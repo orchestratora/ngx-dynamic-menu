@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+## [1.5.3](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.2...v1.5.3) (2019-03-18)
+
+
+### Bug Fixes
+
+* **aot:** remove barrel import in module imports ([189f7af](https://github.com/orchestratora/ngx-dynamic-menu/commit/189f7af))
+
 ## [1.5.2](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.1...v1.5.2) (2019-03-18)
 
 
