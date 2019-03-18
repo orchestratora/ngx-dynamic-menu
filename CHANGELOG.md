@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+## [1.5.2](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.1...v1.5.2) (2019-03-18)
+
+
+### Bug Fixes
+
+* **aot:** allow to build with AOT compiler ([a7771c0](https://github.com/orchestratora/ngx-dynamic-menu/commit/a7771c0))
+
 ## [1.5.1](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.0...v1.5.1) (2019-03-15)
 
 
