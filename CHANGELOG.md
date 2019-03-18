@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+## [1.5.4](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.3...v1.5.4) (2019-03-18)
+
+
+### Bug Fixes
+
+* **menu:** collect all params from full route tree ([8465280](https://github.com/orchestratora/ngx-dynamic-menu/commit/8465280))
+
 ## [1.5.3](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.2...v1.5.3) (2019-03-18)
 
 
