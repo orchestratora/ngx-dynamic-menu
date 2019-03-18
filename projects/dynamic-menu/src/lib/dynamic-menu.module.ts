@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { DynamicMenuComponentModule } from './dynamic-menu';
+import { DynamicMenuComponentModule } from './dynamic-menu/dynamic-menu.module';
 import {
   DynamicMenuExtras,
   provideDynamicMenuExtras,
