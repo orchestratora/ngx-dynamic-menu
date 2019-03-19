@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+## [1.5.5](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.4...v1.5.5) (2019-03-19)
+
+
+### Bug Fixes
+
+* **menu:** check if snapshot exist before params collection ([83b950d](https://github.com/orchestratora/ngx-dynamic-menu/commit/83b950d))
+
 ## [1.5.4](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.3...v1.5.4) (2019-03-18)
 
 
