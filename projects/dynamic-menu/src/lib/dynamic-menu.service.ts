@@ -225,6 +225,10 @@ export class DynamicMenuService implements OnDestroy {
   }
 
   private collectAllParams(route: ActivatedRoute): Params {
+    if (!route.snapshot) {
+      return {};
+    }
+
     let params = route.snapshot.params;
 
     route.children.forEach(
