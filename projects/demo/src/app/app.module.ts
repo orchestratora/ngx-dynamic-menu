@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {
   DefaultDynamicMenuComponentModule,
-  DynamicMenuModule,
+  DynamicMenuModule
 } from 'projects/dynamic-menu/src/public_api';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -15,10 +15,10 @@ import { PrintPathComponent } from './print-path/print-path.component';
     BrowserModule,
     DynamicMenuModule.forRouter(),
     DefaultDynamicMenuComponentModule,
-    AppRoutingModule,
+    AppRoutingModule
   ],
   declarations: [AppComponent, PrintPathComponent, Path3Component],
   bootstrap: [AppComponent],
-  providers: [],
+  providers: []
 })
 export class AppModule {}

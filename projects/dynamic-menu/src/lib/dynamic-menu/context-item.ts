@@ -10,7 +10,7 @@ export class DynamicMenuItemContext extends DynamicMenuTemplateContext {
   constructor(
     /** Every computed route config */
     public $implicit: DynamicMenuRouteConfig,
-    tpl: TemplateRef<any>,
+    tpl: TemplateRef<any>
   ) {
     super(tpl, { $implicit: $implicit.data.menu.children }, $implicit);
   }

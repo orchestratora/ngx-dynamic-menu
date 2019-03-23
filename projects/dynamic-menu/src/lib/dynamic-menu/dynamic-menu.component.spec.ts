@@ -32,7 +32,7 @@ class DynamicMenuServiceMock {
         <ndm-dynamic-menu-items *ngIf="opened"></ndm-dynamic-menu-items>
       </li>
     </ndm-dynamic-menu>
-  `,
+  `
 })
 class HostComponent {}
 
@@ -49,11 +49,11 @@ describe('DynamicMenuComponent', () => {
         DynamicMenuItemDirective,
         DynamicMenuToggleDirective,
         DynamicMenuWrapperDirective,
-        HostComponent,
+        HostComponent
       ],
       providers: [
-        { provide: DynamicMenuService, useClass: DynamicMenuServiceMock },
-      ],
+        { provide: DynamicMenuService, useClass: DynamicMenuServiceMock }
+      ]
     }).compileComponents();
   }));
 
@@ -64,7 +64,7 @@ describe('DynamicMenuComponent', () => {
 
   it('should render one level menu', () => {
     const menuService = TestBed.get(
-      DynamicMenuService,
+      DynamicMenuService
     ) as DynamicMenuServiceMock;
 
     menuService.getMenu.and.returnValue(
@@ -72,19 +72,19 @@ describe('DynamicMenuComponent', () => {
         {
           path: '',
           fullUrl: [''],
-          data: { menu: { label: 'Home' } },
+          data: { menu: { label: 'Home' } }
         },
         {
           path: 'path1',
           fullUrl: ['path1'],
-          data: { menu: { label: 'Path 1' } },
+          data: { menu: { label: 'Path 1' } }
         },
         {
           path: 'path2',
           fullUrl: ['path2'],
-          data: { menu: { label: 'Path 2' } },
-        },
-      ]),
+          data: { menu: { label: 'Path 2' } }
+        }
+      ])
     );
 
     fixture.detectChanges();
@@ -100,20 +100,20 @@ describe('DynamicMenuComponent', () => {
       expect(aElem).toBeTruthy();
       return {
         href: aElem.properties.href,
-        label: aElem.nativeElement.textContent,
+        label: aElem.nativeElement.textContent
       };
     });
 
     expect(data).toEqual([
       { href: '/', label: 'Home' },
       { href: '/path1', label: 'Path 1' },
-      { href: '/path2', label: 'Path 2' },
+      { href: '/path2', label: 'Path 2' }
     ]);
   });
 
   it('should render one level menu', () => {
     const menuService = TestBed.get(
-      DynamicMenuService,
+      DynamicMenuService
     ) as DynamicMenuServiceMock;
 
     menuService.getMenu.and.returnValue(
@@ -121,19 +121,19 @@ describe('DynamicMenuComponent', () => {
         {
           path: '',
           fullUrl: [''],
-          data: { menu: { label: 'Home' } },
+          data: { menu: { label: 'Home' } }
         },
         {
           path: 'path1',
           fullUrl: ['path1'],
-          data: { menu: { label: 'Path 1' } },
+          data: { menu: { label: 'Path 1' } }
         },
         {
           path: 'path2',
           fullUrl: ['path2'],
-          data: { menu: { label: 'Path 2' } },
-        },
-      ]),
+          data: { menu: { label: 'Path 2' } }
+        }
+      ])
     );
 
     fixture.detectChanges();
@@ -149,20 +149,20 @@ describe('DynamicMenuComponent', () => {
       expect(aElem).toBeTruthy();
       return {
         href: aElem.properties.href,
-        label: aElem.nativeElement.textContent,
+        label: aElem.nativeElement.textContent
       };
     });
 
     expect(data).toEqual([
       { href: '/', label: 'Home' },
       { href: '/path1', label: 'Path 1' },
-      { href: '/path2', label: 'Path 2' },
+      { href: '/path2', label: 'Path 2' }
     ]);
   });
 
   it('should render 3 level menu', () => {
     const menuService = TestBed.get(
-      DynamicMenuService,
+      DynamicMenuService
     ) as DynamicMenuServiceMock;
 
     menuService.getMenu.and.returnValue(
@@ -170,7 +170,7 @@ describe('DynamicMenuComponent', () => {
         {
           path: '',
           fullUrl: [''],
-          data: { menu: { label: 'Home' } },
+          data: { menu: { label: 'Home' } }
         },
         {
           path: 'path1',
@@ -189,32 +189,32 @@ describe('DynamicMenuComponent', () => {
                         {
                           path: 'c11',
                           fullUrl: ['path1', 'c1', 'c11'],
-                          data: { menu: { label: 'Children 1.1' } },
+                          data: { menu: { label: 'Children 1.1' } }
                         },
                         {
                           path: 'c12',
                           fullUrl: ['path1', 'c1', 'c12'],
-                          data: { menu: { label: 'Children 1.2' } },
-                        },
-                      ],
-                    },
-                  },
+                          data: { menu: { label: 'Children 1.2' } }
+                        }
+                      ]
+                    }
+                  }
                 },
                 {
                   path: 'c2',
                   fullUrl: ['path1', 'c2'],
-                  data: { menu: { label: 'Children 2' } },
-                },
-              ],
-            },
-          },
+                  data: { menu: { label: 'Children 2' } }
+                }
+              ]
+            }
+          }
         },
         {
           path: 'path2',
           fullUrl: ['path2'],
-          data: { menu: { label: 'Path 2' } },
-        },
-      ]),
+          data: { menu: { label: 'Path 2' } }
+        }
+      ])
     );
 
     fixture.detectChanges();
@@ -236,19 +236,19 @@ describe('DynamicMenuComponent', () => {
       expect(aElem).toBeTruthy();
       return {
         href: aElem.properties.href,
-        label: aElem.nativeElement.textContent,
+        label: aElem.nativeElement.textContent
       };
     });
 
     expect(data).toEqual([
       { href: '/path1/c1/c11', label: 'Children 1.1' },
-      { href: '/path1/c1/c12', label: 'Children 1.2' },
+      { href: '/path1/c1/c12', label: 'Children 1.2' }
     ]);
   });
 
   it('should render toggle template if `renderAsToggle = true`', () => {
     const menuService = TestBed.get(
-      DynamicMenuService,
+      DynamicMenuService
     ) as DynamicMenuServiceMock;
 
     menuService.getMenu.and.returnValue(
@@ -264,13 +264,13 @@ describe('DynamicMenuComponent', () => {
                 {
                   path: 'c1',
                   fullUrl: ['path1', 'c1'],
-                  data: { menu: { label: 'Children 1' } },
-                },
-              ],
-            },
-          },
-        },
-      ]),
+                  data: { menu: { label: 'Children 1' } }
+                }
+              ]
+            }
+          }
+        }
+      ])
     );
 
     fixture.detectChanges();

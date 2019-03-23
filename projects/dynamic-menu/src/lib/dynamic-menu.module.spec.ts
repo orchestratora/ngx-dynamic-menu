@@ -22,8 +22,8 @@ describe('Module: DynamicMenu', () => {
 
       expect(res.providers as any).toEqual(
         jasmine.arrayContaining([
-          { provide: DYNAMIC_MENU_ROUTES_TOKEN, useValue: [], multi: true },
-        ]),
+          { provide: DYNAMIC_MENU_ROUTES_TOKEN, useValue: [], multi: true }
+        ])
       );
     });
 
@@ -35,9 +35,9 @@ describe('Module: DynamicMenu', () => {
         jasmine.arrayContaining([
           {
             provide: DynamicMenuExtrasToken,
-            useValue: jasmine.objectContaining(extras),
-          },
-        ]),
+            useValue: jasmine.objectContaining(extras)
+          }
+        ])
       );
     });
 
@@ -50,10 +50,10 @@ describe('Module: DynamicMenu', () => {
           {
             provide: DynamicMenuExtrasToken,
             useValue: jasmine.objectContaining({
-              listenForConfigChanges: true,
-            }),
-          },
-        ]),
+              listenForConfigChanges: true
+            })
+          }
+        ])
       );
     });
   });
@@ -72,8 +72,8 @@ describe('Module: DynamicMenu', () => {
       expect(res.providers).toEqual(jasmine.any(Array));
       expect(res.providers as any).toEqual(
         jasmine.arrayContaining([
-          { provide: DYNAMIC_MENU_ROUTES_TOKEN, useValue: routes, multi: true },
-        ]),
+          { provide: DYNAMIC_MENU_ROUTES_TOKEN, useValue: routes, multi: true }
+        ])
       );
     });
 
@@ -86,9 +86,9 @@ describe('Module: DynamicMenu', () => {
         jasmine.arrayContaining([
           {
             provide: DynamicMenuExtrasToken,
-            useValue: jasmine.objectContaining(extras),
-          },
-        ]),
+            useValue: jasmine.objectContaining(extras)
+          }
+        ])
       );
     });
   });
@@ -103,9 +103,9 @@ describe('Module: DynamicMenu', () => {
           {
             provide: ANALYZE_FOR_ENTRY_COMPONENTS,
             useValue: comp,
-            multi: true,
-          },
-        ]),
+            multi: true
+          }
+        ])
       );
     });
 
@@ -118,9 +118,9 @@ describe('Module: DynamicMenu', () => {
           {
             provide: SUB_MENU_MAP_TOKEN,
             useValue: jasmine.objectContaining({ name: 'name', type: comp }),
-            multi: true,
-          },
-        ]),
+            multi: true
+          }
+        ])
       );
     });
   });

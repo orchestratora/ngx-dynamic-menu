@@ -4,6 +4,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'ndm-default-dynamic-menu',
   templateUrl: './default-dynamic-menu.component.html',
   styleUrls: ['./default-dynamic-menu.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DefaultDynamicMenuComponent {}

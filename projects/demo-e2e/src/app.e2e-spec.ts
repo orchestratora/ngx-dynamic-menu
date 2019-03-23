@@ -21,8 +21,8 @@ describe('workspace-project App', () => {
       .get(logging.Type.BROWSER);
     expect(logs).not.toContain(
       jasmine.objectContaining({
-        level: logging.Level.SEVERE,
-      }),
+        level: logging.Level.SEVERE
+      })
     );
   });
 });

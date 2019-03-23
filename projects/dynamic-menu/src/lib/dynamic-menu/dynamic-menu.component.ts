@@ -4,7 +4,7 @@ import {
   ContentChild,
   OnDestroy,
   OnInit,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
 import { EMPTY, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -22,7 +22,7 @@ import { DynamicMenuWrapperDirective } from './dynamic-menu-wrapper/dynamic-menu
   selector: 'ndm-dynamic-menu',
   templateUrl: './dynamic-menu.component.html',
   styleUrls: ['./dynamic-menu.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicMenuComponent implements OnInit, OnDestroy {
   @ContentChild(DynamicMenuWrapperDirective)
@@ -57,7 +57,7 @@ export class DynamicMenuComponent implements OnInit, OnDestroy {
   getWrapperCtx(configs: DynamicMenuRouteConfig[], tpl: TemplateRef<any>) {
     return this.getCtx(
       configs,
-      () => new DynamicMenuWrapperContext(configs, tpl),
+      () => new DynamicMenuWrapperContext(configs, tpl)
     );
   }
 

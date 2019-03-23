@@ -20,7 +20,7 @@ export interface DynamicMenuExtras {
  * @internal
  */
 export const DynamicMenuExtrasToken = new InjectionToken<DynamicMenuExtras>(
-  'DynamicMenuExtrasToken',
+  'DynamicMenuExtrasToken'
 );
 
 /**
@@ -32,7 +32,7 @@ export class DynamicMenuExtrasService implements DynamicMenuExtras {
 
   constructor(
     @Inject(DynamicMenuExtrasToken)
-    private extras: DynamicMenuExtras = { listenForConfigChanges: false },
+    private extras: DynamicMenuExtras = { listenForConfigChanges: false }
   ) {}
 }
 
@@ -43,6 +43,6 @@ export class DynamicMenuExtrasService implements DynamicMenuExtras {
 export function provideDynamicMenuExtras(extras?: DynamicMenuExtras): Provider {
   return {
     provide: DynamicMenuExtrasToken,
-    useValue: extras,
+    useValue: extras
   };
 }

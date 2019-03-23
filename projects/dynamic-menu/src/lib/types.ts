@@ -66,5 +66,5 @@ export interface DynamicMenuRouteConfig extends RouteWithMenu {
 
 export type DynamicMenuConfigResolver = (
   config: RouteWithMenu,
-  parentConfig?: DynamicMenuRouteConfig,
+  parentConfig?: DynamicMenuRouteConfig
 ) => DynamicMenuRouteConfig;
