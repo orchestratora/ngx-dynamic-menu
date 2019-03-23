@@ -68,7 +68,7 @@ export class DynamicMenuModule {
         useValue: component,
         multi: true
       },
-      provideSubMenuMap(name, component)
+      ...provideSubMenuMap(name, component)
     ];
   }
 }
