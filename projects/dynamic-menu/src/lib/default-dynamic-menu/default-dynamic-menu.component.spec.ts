@@ -4,7 +4,7 @@ import {
   ContentChild,
   CUSTOM_ELEMENTS_SCHEMA,
   DebugElement,
-  TemplateRef,
+  TemplateRef
 } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -20,7 +20,7 @@ describe('DefaultDynamicMenuComponent', () => {
     selector: 'ndm-dynamic-menu',
     template: `
       <ng-container *ngTemplateOutlet="tpl; context: ctx"></ng-container>
-    `,
+    `
   })
   class DynamicMenuMockComponent {
     @ContentChild(DynamicMenuItemDirective) itemDir:
@@ -45,9 +45,9 @@ describe('DefaultDynamicMenuComponent', () => {
         DynamicMenuItemDirective,
         DynamicMenuToggleDirective,
         DynamicMenuWrapperDirective,
-        DynamicMenuMockComponent,
+        DynamicMenuMockComponent
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
   });
 
@@ -62,7 +62,7 @@ describe('DefaultDynamicMenuComponent', () => {
     fixture = TestBed.createComponent(DefaultDynamicMenuComponent);
     component = fixture.componentInstance;
     dynamicMenuElem = fixture.debugElement.query(
-      By.directive(DynamicMenuMockComponent),
+      By.directive(DynamicMenuMockComponent)
     );
     dynamicMenuComp = dynamicMenuElem.componentInstance;
     cdr = dynamicMenuElem.injector.get(ChangeDetectorRef);
@@ -97,7 +97,7 @@ describe('DefaultDynamicMenuComponent', () => {
       cdr.detectChanges();
 
       const itemsElem = dynamicMenuElem.query(
-        By.css('a + ndm-dynamic-menu-items'),
+        By.css('a + ndm-dynamic-menu-items')
       );
       expect(itemsElem).toBeTruthy();
     });
@@ -123,7 +123,7 @@ describe('DefaultDynamicMenuComponent', () => {
       cdr.detectChanges();
 
       const itemsElem = dynamicMenuElem.query(
-        By.css('ul > ndm-dynamic-menu-items'),
+        By.css('ul > ndm-dynamic-menu-items')
       );
       expect(itemsElem).toBeTruthy();
     });
@@ -142,7 +142,7 @@ describe('DefaultDynamicMenuComponent', () => {
       dynamicMenuComp.ctx = {
         $implicit: {},
         item: { label: 'label' },
-        context: { opened: false },
+        context: { opened: false }
       };
 
       cdr.detectChanges();
@@ -157,13 +157,13 @@ describe('DefaultDynamicMenuComponent', () => {
         dynamicMenuComp.ctx = {
           $implicit: {},
           item: { label: 'label' },
-          context: { opened: true },
+          context: { opened: true }
         };
 
         cdr.detectChanges();
 
         const itemsElem = dynamicMenuElem.query(
-          By.css('button ~ ndm-dynamic-menu-items'),
+          By.css('button ~ ndm-dynamic-menu-items')
         );
         expect(itemsElem).toBeTruthy();
       });
@@ -172,13 +172,13 @@ describe('DefaultDynamicMenuComponent', () => {
         dynamicMenuComp.ctx = {
           $implicit: {},
           item: { label: 'label' },
-          context: { opened: false },
+          context: { opened: false }
         };
 
         cdr.detectChanges();
 
         const itemsElem = dynamicMenuElem.query(
-          By.css('button ~ ndm-dynamic-menu-items'),
+          By.css('button ~ ndm-dynamic-menu-items')
         );
         expect(itemsElem).toBeFalsy();
       });
@@ -187,13 +187,13 @@ describe('DefaultDynamicMenuComponent', () => {
         dynamicMenuComp.ctx = {
           $implicit: {},
           item: { label: 'label' },
-          context: { opened: false },
+          context: { opened: false }
         };
 
         cdr.detectChanges();
 
         expect(
-          dynamicMenuElem.query(By.css('button ~ ndm-dynamic-menu-items')),
+          dynamicMenuElem.query(By.css('button ~ ndm-dynamic-menu-items'))
         ).toBeFalsy();
 
         const btnElem = dynamicMenuElem.query(By.css('button'));
@@ -202,7 +202,7 @@ describe('DefaultDynamicMenuComponent', () => {
         cdr.detectChanges();
 
         expect(
-          dynamicMenuElem.query(By.css('button ~ ndm-dynamic-menu-items')),
+          dynamicMenuElem.query(By.css('button ~ ndm-dynamic-menu-items'))
         ).toBeTruthy();
       });
     });

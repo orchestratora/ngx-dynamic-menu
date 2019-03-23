@@ -5,7 +5,7 @@ import { DynamicMenuService } from 'projects/dynamic-menu/src/public_api';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
   constructor(private dynamicMenuService: DynamicMenuService) {}
@@ -13,23 +13,23 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.dynamicMenuService.addMenuAfter(['path3', ':id', 'path6'], {
       path: 'custom-path',
-      data: { menu: { label: 'Custom Section' } },
+      data: { menu: { label: 'Custom Section' } }
     });
     this.dynamicMenuService.addMenuToStart(['path3', ':id', 'path6'], {
       path: 'custom-path2',
-      data: { menu: { label: 'Custom Section - Start' } },
+      data: { menu: { label: 'Custom Section - Start' } }
     });
     this.dynamicMenuService.addMenuToEnd(['path3', ':id', 'path6'], {
       path: 'custom-path3',
-      data: { menu: { label: 'Custom Section - End' } },
+      data: { menu: { label: 'Custom Section - End' } }
     });
     this.dynamicMenuService.addMenuToStart([''], {
       path: 'custom-path-start',
-      data: { menu: { label: 'Custom Section - Start' } },
+      data: { menu: { label: 'Custom Section - Start' } }
     });
     this.dynamicMenuService.addMenuToEnd([''], {
       path: 'custom-path-end',
-      data: { menu: { label: 'Custom Section - End' } },
+      data: { menu: { label: 'Custom Section - End' } }
     });
   }
 }

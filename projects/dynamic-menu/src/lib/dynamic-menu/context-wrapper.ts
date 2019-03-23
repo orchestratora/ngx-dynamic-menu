@@ -7,7 +7,7 @@ export class DynamicMenuWrapperContext extends DynamicMenuTemplateContext {
   constructor(
     /** Array of route configurations that will be rendered */
     public $implicit: DynamicMenuRouteConfig[],
-    tpl: TemplateRef<any>,
+    tpl: TemplateRef<any>
   ) {
     super(tpl, { $implicit });
   }

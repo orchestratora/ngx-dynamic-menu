@@ -14,7 +14,7 @@ class DynamicMenuServiceMock {
   selector: 'ndm-host',
   template: `
     <ndm-dynamic-menu-items></ndm-dynamic-menu-items>
-  `,
+  `
 })
 class HostComponent {
   getCtx = jasmine.createSpy('getCtx spy');
@@ -29,8 +29,8 @@ describe('DynamicMenuItemsComponent', () => {
       imports: [RouterTestingModule],
       declarations: [DynamicMenuItemsComponent, HostComponent],
       providers: [
-        { provide: DynamicMenuService, useClass: DynamicMenuServiceMock },
-      ],
+        { provide: DynamicMenuService, useClass: DynamicMenuServiceMock }
+      ]
     });
   });
 
@@ -63,7 +63,7 @@ describe('DynamicMenuItemsComponent', () => {
 
     it('should NOT throw on init', () => {
       hostComp.getCtx.and.callFake(
-        (tpl: any) => new DynamicMenuTemplateContext(tpl, {}),
+        (tpl: any) => new DynamicMenuTemplateContext(tpl, {})
       );
 
       expect(() => fixture.detectChanges()).not.toThrow();
@@ -71,7 +71,7 @@ describe('DynamicMenuItemsComponent', () => {
 
     it('should render tpl with context from `DynamicMenuTemplateContext`', () => {
       hostComp.getCtx.and.callFake(
-        (tpl: any) => new DynamicMenuTemplateContext(tpl, { $implicit: 'var' }),
+        (tpl: any) => new DynamicMenuTemplateContext(tpl, { $implicit: 'var' })
       );
 
       fixture.detectChanges();
@@ -94,11 +94,11 @@ describe('DynamicMenuItemsComponent', () => {
                     menu: {
                       showChildrenIfActivated: true,
                       label: '',
-                      children: [],
-                    },
-                  },
-                },
-              ),
+                      children: []
+                    }
+                  }
+                }
+              )
           );
         });
 
@@ -106,7 +106,7 @@ describe('DynamicMenuItemsComponent', () => {
           fixture.detectChanges();
 
           expect(getDynamicMenuService().isActive).toHaveBeenCalledWith(
-            'full-url',
+            'full-url'
           );
         });
 
@@ -141,11 +141,11 @@ describe('DynamicMenuItemsComponent', () => {
                     menu: {
                       showChildrenIfActivated: false,
                       label: '',
-                      children: [],
-                    },
-                  },
-                },
-              ),
+                      children: []
+                    }
+                  }
+                }
+              )
           );
         });
 
@@ -178,11 +178,11 @@ describe('DynamicMenuItemsComponent', () => {
                     menu: {
                       showChildrenIfChildActivated: true,
                       label: '',
-                      children: [],
-                    },
-                  },
-                },
-              ),
+                      children: []
+                    }
+                  }
+                }
+              )
           );
         });
 
@@ -191,7 +191,7 @@ describe('DynamicMenuItemsComponent', () => {
 
           expect(getDynamicMenuService().isActive).toHaveBeenCalledWith(
             'full-url',
-            true,
+            true
           );
         });
 
@@ -199,7 +199,7 @@ describe('DynamicMenuItemsComponent', () => {
           fixture.detectChanges();
 
           expect(getDynamicMenuService().isActive).toHaveBeenCalledWith(
-            'full-url',
+            'full-url'
           );
         });
 
@@ -242,11 +242,11 @@ describe('DynamicMenuItemsComponent', () => {
                     menu: {
                       showChildrenIfChildActivated: false,
                       label: '',
-                      children: [],
-                    },
-                  },
-                },
-              ),
+                      children: []
+                    }
+                  }
+                }
+              )
           );
         });
 

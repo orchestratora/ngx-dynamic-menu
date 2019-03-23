@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
-  ViewContainerRef,
+  ViewContainerRef
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
@@ -20,24 +20,24 @@ export interface NgView<T, C = T> {
   selector: 'ndm-dynamic-menu-items',
   templateUrl: './dynamic-menu-items.component.html',
   styleUrls: ['./dynamic-menu-items.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicMenuItemsComponent implements OnInit {
   ctx!: DynamicMenuTemplateContext;
 
   navigationEnd$ = this.router.events.pipe(
-    filter(e => e instanceof NavigationEnd),
+    filter(e => e instanceof NavigationEnd)
   );
 
   shouldRender$ = this.navigationEnd$.pipe(
     startWith(null),
-    map(() => this.shouldRender()),
+    map(() => this.shouldRender())
   );
 
   constructor(
     private vcr: ViewContainerRef,
     private dynamicMenuService: DynamicMenuService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -67,7 +67,7 @@ export class DynamicMenuItemsComponent implements OnInit {
       const {
         renderAsToggle,
         showChildrenIfActivated,
-        showChildrenIfChildActivated,
+        showChildrenIfChildActivated
       } = parentConfig.data.menu;
 
       if (renderAsToggle) {

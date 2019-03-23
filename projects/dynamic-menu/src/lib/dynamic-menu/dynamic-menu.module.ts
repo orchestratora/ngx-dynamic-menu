@@ -14,14 +14,14 @@ import { DynamicMenuComponent } from './dynamic-menu.component';
     DynamicMenuItemsComponent,
     DynamicMenuWrapperDirective,
     DynamicMenuItemDirective,
-    DynamicMenuToggleDirective,
+    DynamicMenuToggleDirective
   ],
   declarations: [
     DynamicMenuComponent,
     DynamicMenuItemsComponent,
     DynamicMenuWrapperDirective,
     DynamicMenuItemDirective,
-    DynamicMenuToggleDirective,
-  ],
+    DynamicMenuToggleDirective
+  ]
 })
 export class DynamicMenuComponentModule {}

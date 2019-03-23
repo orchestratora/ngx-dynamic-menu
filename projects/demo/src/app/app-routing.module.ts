@@ -1,89 +1,89 @@
-import { NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { RoutesWithMenu } from "projects/dynamic-menu/src/lib/types";
-import { DynamicMenuModule } from "projects/dynamic-menu/src/public_api";
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { RoutesWithMenu } from 'projects/dynamic-menu/src/lib/types';
+import { DynamicMenuModule } from 'projects/dynamic-menu/src/public_api';
 
-import { Path3Component } from "./path3.component";
-import { PrintPathComponent } from "./print-path/print-path.component";
+import { Path3Component } from './path3.component';
+import { PrintPathComponent } from './print-path/print-path.component';
 
 const routes: RoutesWithMenu = [
   {
-    path: "",
+    path: '',
     component: PrintPathComponent,
-    data: { menu: { label: "Home" } }
+    data: { menu: { label: 'Home' } }
   },
   {
-    path: "path2",
+    path: 'path2',
     component: PrintPathComponent,
-    data: { menu: { label: "Section 2", renderAsToggle: true } },
+    data: { menu: { label: 'Section 2', renderAsToggle: true } },
     children: [
       {
-        path: "path4",
+        path: 'path4',
         component: PrintPathComponent,
-        data: { menu: { label: "Section 4" } }
+        data: { menu: { label: 'Section 4' } }
       },
       {
-        path: "path5",
+        path: 'path5',
         component: PrintPathComponent,
-        data: { menu: { label: "Section 5", renderAsToggle: true } },
+        data: { menu: { label: 'Section 5', renderAsToggle: true } },
         children: [
           {
-            path: "path8",
+            path: 'path8',
             component: PrintPathComponent,
-            data: { menu: { label: "Section 8" } }
+            data: { menu: { label: 'Section 8' } }
           }
         ]
       }
     ]
   },
   {
-    path: "path3",
+    path: 'path3',
     component: PrintPathComponent,
     data: {
       menu: {
-        label: "Section 3",
+        label: 'Section 3',
         showChildrenIfActivated: true,
-        subMenuComponent: "SubMenuForSection3"
+        subMenuComponent: 'SubMenuForSection3'
       }
     },
     children: [
       {
-        path: ":id",
+        path: ':id',
         children: [
           {
-            path: "path6",
+            path: 'path6',
             component: PrintPathComponent,
-            data: { menu: { label: "Section 6" } }
+            data: { menu: { label: 'Section 6' } }
           },
           {
-            path: "path7",
+            path: 'path7',
             component: PrintPathComponent,
-            data: { menu: { label: "Section 7" } }
+            data: { menu: { label: 'Section 7' } }
           }
         ]
       }
     ]
   },
   {
-    path: "path4",
+    path: 'path4',
     children: [
       {
-        path: "path1",
+        path: 'path1',
         component: PrintPathComponent,
-        data: { menu: { label: "Section 4.1" } }
+        data: { menu: { label: 'Section 4.1' } }
       },
       {
-        path: "path2",
+        path: 'path2',
         component: PrintPathComponent,
-        data: { menu: { label: "Section 4.2" } }
+        data: { menu: { label: 'Section 4.2' } }
       }
     ]
   },
   {
-    path: "feature1",
+    path: 'feature1',
     // component: PrintPathComponent,
-    loadChildren: "./feature1/feature1.module#Feature1Module",
-    data: { menu: { label: "Feature1" } }
+    loadChildren: './feature1/feature1.module#Feature1Module',
+    data: { menu: { label: 'Feature1' } }
   }
 ];
 
@@ -91,7 +91,7 @@ const routes: RoutesWithMenu = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [
-    DynamicMenuModule.provideSubMenu("SubMenuForSection3", Path3Component)
+    DynamicMenuModule.provideSubMenu('SubMenuForSection3', Path3Component)
   ]
 })
 export class AppRoutingModule {}

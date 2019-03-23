@@ -6,7 +6,7 @@ import { RoutesWithMenu } from './types';
  * @internal
  */
 export const DYNAMIC_MENU_ROUTES_TOKEN = new InjectionToken<RoutesWithMenu[]>(
-  'DYNAMIC_MENU_ROUTES_TOKEN',
+  'DYNAMIC_MENU_ROUTES_TOKEN'
 );
 
 /**

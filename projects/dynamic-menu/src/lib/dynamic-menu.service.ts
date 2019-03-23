@@ -1,4 +1,4 @@
-import { Injectable, Injector, OnDestroy } from "@angular/core";
+import { Injectable, Injector, OnDestroy } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -6,8 +6,8 @@ import {
   Route,
   RouteConfigLoadEnd,
   Router
-} from "@angular/router";
-import { combineLatest, EMPTY, Subject, zip } from "rxjs";
+} from '@angular/router';
+import { combineLatest, EMPTY, Subject, zip } from 'rxjs';
 import {
   delay,
   filter,
@@ -17,21 +17,21 @@ import {
   scan,
   startWith,
   takeUntil
-} from "rxjs/operators";
+} from 'rxjs/operators';
 
-import { DynamicMenuExtrasService } from "./dynamic-menu-extras";
-import { DYNAMIC_MENU_ROUTES_TOKEN } from "./dynamic-menu-routes";
-import { SubMenuMap, SubMenuMapToken } from "./sub-menu-map-provider";
+import { DynamicMenuExtrasService } from './dynamic-menu-extras';
+import { DYNAMIC_MENU_ROUTES_TOKEN } from './dynamic-menu-routes';
+import { SubMenuMap, SubMenuMapToken } from './sub-menu-map-provider';
 import {
   DynamicMenuConfigResolver,
   DynamicMenuRouteConfig,
   RoutesWithMenu,
   RouteWithMenu
-} from "./types";
+} from './types';
 
 export interface CustomMenu {
   location: string[];
-  mode: "insert" | "start" | "end";
+  mode: 'insert' | 'start' | 'end';
   menu: RoutesWithMenu;
   used?: boolean;
 }
@@ -45,7 +45,7 @@ export type MenuVisitor<T> = (
 ) => { node: T; acc?: T[] };
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class DynamicMenuService implements OnDestroy {
   private destroyed$ = new Subject<void>();
@@ -123,7 +123,7 @@ export class DynamicMenuService implements OnDestroy {
     this.addCustomMenu$.next([
       {
         location: fullPath,
-        mode: "insert",
+        mode: 'insert',
         menu: Array.isArray(menu) ? menu : [menu]
       }
     ]);
@@ -133,7 +133,7 @@ export class DynamicMenuService implements OnDestroy {
     this.addCustomMenu$.next([
       {
         location: fullPath,
-        mode: "start",
+        mode: 'start',
         menu: Array.isArray(menu) ? menu : [menu]
       }
     ]);
@@ -143,7 +143,7 @@ export class DynamicMenuService implements OnDestroy {
     this.addCustomMenu$.next([
       {
         location: fullPath,
-        mode: "end",
+        mode: 'end',
         menu: Array.isArray(menu) ? menu : [menu]
       }
     ]);
@@ -169,7 +169,7 @@ export class DynamicMenuService implements OnDestroy {
 
     const name = config.data.menu.subMenuComponent;
 
-    if (typeof name === "string") {
+    if (typeof name === 'string') {
       const info = subMenuMap.find(m => m.name === name);
 
       if (!info) {
@@ -185,7 +185,7 @@ export class DynamicMenuService implements OnDestroy {
   }
 
   private shouldSkipConfig(config: RouteWithMenu) {
-    return config.path === "**" || !!config.redirectTo;
+    return config.path === '**' || !!config.redirectTo;
   }
 
   private updateFullPaths(
@@ -212,12 +212,12 @@ export class DynamicMenuService implements OnDestroy {
   }
 
   private applyParams(paths: string[], params: Params): string[] {
-    if (!/:/.test(paths.join(""))) {
+    if (!/:/.test(paths.join(''))) {
       return paths;
     }
 
     return paths.map(path =>
-      path.startsWith(":") ? params[path.slice(1)] || path : path
+      path.startsWith(':') ? params[path.slice(1)] || path : path
     );
   }
 
@@ -285,7 +285,7 @@ export class DynamicMenuService implements OnDestroy {
       data: {
         ...config.data,
         menu: {
-          label: "",
+          label: '',
           children: undefined as any,
           ...(config.data && config.data.menu),
           subMenuComponent
@@ -393,7 +393,7 @@ export class DynamicMenuService implements OnDestroy {
           }
 
           const isStaticMode =
-            customItem.mode === "start" || customItem.mode === "end";
+            customItem.mode === 'start' || customItem.mode === 'end';
 
           const isLocationMatch = isStaticMode
             ? acc.some(n => this.isMenuMatch(customItem, n))
@@ -416,7 +416,7 @@ export class DynamicMenuService implements OnDestroy {
 
           if (
             idx === -1 ||
-            (customItem.mode === "end" && idx !== idxChildren.length - 1)
+            (customItem.mode === 'end' && idx !== idxChildren.length - 1)
           ) {
             return acc;
           }
@@ -434,17 +434,17 @@ export class DynamicMenuService implements OnDestroy {
           let newChildren = children;
 
           switch (customItem.mode) {
-            case "insert":
+            case 'insert':
               newChildren = [
                 ...children.slice(0, idx + 1),
                 ...menu,
                 ...children.slice(idx + 1)
               ];
               break;
-            case "start":
+            case 'start':
               newChildren = [...menu, ...children];
               break;
-            case "end":
+            case 'end':
               newChildren = [...children, ...menu];
               break;
           }
@@ -468,7 +468,7 @@ export class DynamicMenuService implements OnDestroy {
 
   private isMenuMatch(menu: CustomMenu, node: AnyMenuRoute): boolean {
     return (
-      "fullPath" in node &&
+      'fullPath' in node &&
       node.fullPath.length === menu.location.length &&
       node.fullPath.every((p, i) => menu.location[i] === p)
     );

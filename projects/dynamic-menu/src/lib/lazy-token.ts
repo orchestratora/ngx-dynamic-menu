@@ -4,8 +4,8 @@ import {
   Injector,
   Provider,
   Type
-} from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+} from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export type DiToken<T> = InjectionToken<T> | Type<T>;
 

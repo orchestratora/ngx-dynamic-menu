@@ -16,7 +16,7 @@ class TestComponent {}
 
 @NgModule({
   declarations: [TestComponent],
-  exports: [TestComponent],
+  exports: [TestComponent]
 })
 class TestModule {}
 
@@ -27,7 +27,7 @@ describe('Service: DynamicMenu', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TestModule, RouterTestingModule.withRoutes([])],
-      providers: [DynamicMenuService, provideDynamicMenuExtras({})],
+      providers: [DynamicMenuService, provideDynamicMenuExtras({})]
     });
 
     destroyed$ = new Subject();
@@ -54,18 +54,18 @@ describe('Service: DynamicMenu', () => {
                 {
                   path: 'route3',
                   component: TestComponent,
-                  data: { menu: { label: 'Route 3' } },
-                },
-              ],
+                  data: { menu: { label: 'Route 3' } }
+                }
+              ]
             },
             {
               path: 'route2',
               component: TestComponent,
-              data: { menu: { label: 'Route 2' } },
+              data: { menu: { label: 'Route 2' } }
             },
-            { path: '**', redirectTo: '/', pathMatch: 'full' }, // Should be skipped
-          ]),
-        ],
+            { path: '**', redirectTo: '/', pathMatch: 'full' } // Should be skipped
+          ])
+        ]
       });
 
       const callback = jasmine.createSpy('callback');
@@ -114,13 +114,13 @@ describe('Service: DynamicMenu', () => {
                   path: 'route2',
                   component: TestComponent,
                   data: {
-                    menu: { label: 'Route 2', subMenuComponent: 'comp2' },
-                  },
-                },
-              ],
-            },
-          ]),
-        ],
+                    menu: { label: 'Route 2', subMenuComponent: 'comp2' }
+                  }
+                }
+              ]
+            }
+          ])
+        ]
       });
 
       const callback = jasmine.createSpy('callback');
@@ -159,17 +159,17 @@ describe('Service: DynamicMenu', () => {
         {
           path: '',
           component: TestComponent,
-          data: { menu: { label: 'Main' } },
+          data: { menu: { label: 'Main' } }
         },
         {
           path: 'child',
           loadChildren: childResolver,
-          data: { menu: { label: 'Child' } },
-        },
+          data: { menu: { label: 'Child' } }
+        }
       ];
 
       @NgModule({
-        imports: [TestModule, RouterTestingModule.withRoutes(routes)],
+        imports: [TestModule, RouterTestingModule.withRoutes(routes)]
       })
       class TestRootModule {}
 
@@ -177,18 +177,18 @@ describe('Service: DynamicMenu', () => {
         {
           path: '',
           component: TestComponent,
-          data: { menu: { label: 'Sub menu' } },
-        },
+          data: { menu: { label: 'Sub menu' } }
+        }
       ];
 
       @NgModule({
-        imports: [TestModule, RouterTestingModule.withRoutes(childRoutes)],
+        imports: [TestModule, RouterTestingModule.withRoutes(childRoutes)]
       })
       class ChildModule {}
 
       TestBed.configureTestingModule({
         imports: [TestRootModule],
-        providers: [provideDynamicMenuExtras({ listenForConfigChanges: true })],
+        providers: [provideDynamicMenuExtras({ listenForConfigChanges: true })]
       });
 
       getService()
@@ -252,7 +252,7 @@ describe('Service: DynamicMenu', () => {
         {
           path: '',
           component: TestComponent,
-          data: { menu: { label: 'Main' } },
+          data: { menu: { label: 'Main' } }
         },
         {
           path: 'child',
@@ -261,24 +261,24 @@ describe('Service: DynamicMenu', () => {
             {
               path: 'child1',
               component: TestComponent,
-              data: { menu: { label: 'Child1' } },
+              data: { menu: { label: 'Child1' } }
             },
             {
               path: 'child2',
               component: TestComponent,
-              data: { menu: { label: 'Child2' } },
-            },
-          ],
-        },
+              data: { menu: { label: 'Child2' } }
+            }
+          ]
+        }
       ];
 
       @NgModule({
-        imports: [TestModule, RouterTestingModule.withRoutes(routes)],
+        imports: [TestModule, RouterTestingModule.withRoutes(routes)]
       })
       class TestRootModule {}
 
       TestBed.configureTestingModule({
-        imports: [TestRootModule],
+        imports: [TestRootModule]
       });
     });
 
@@ -287,7 +287,7 @@ describe('Service: DynamicMenu', () => {
 
       getService().addMenuAfter(['child', 'child1'], {
         path: 'custom',
-        data: { menu: { label: 'Custom' } },
+        data: { menu: { label: 'Custom' } }
       });
 
       getService()
@@ -333,7 +333,7 @@ describe('Service: DynamicMenu', () => {
 
       getService().addMenuAfter([''], {
         path: 'custom',
-        data: { menu: { label: 'Custom' } },
+        data: { menu: { label: 'Custom' } }
       });
 
       tick();
@@ -353,7 +353,7 @@ describe('Service: DynamicMenu', () => {
         {
           path: '',
           component: TestComponent,
-          data: { menu: { label: 'Main' } },
+          data: { menu: { label: 'Main' } }
         },
         {
           path: 'child',
@@ -362,24 +362,24 @@ describe('Service: DynamicMenu', () => {
             {
               path: 'child1',
               component: TestComponent,
-              data: { menu: { label: 'Child1' } },
+              data: { menu: { label: 'Child1' } }
             },
             {
               path: 'child2',
               component: TestComponent,
-              data: { menu: { label: 'Child2' } },
-            },
-          ],
-        },
+              data: { menu: { label: 'Child2' } }
+            }
+          ]
+        }
       ];
 
       @NgModule({
-        imports: [TestModule, RouterTestingModule.withRoutes(routes)],
+        imports: [TestModule, RouterTestingModule.withRoutes(routes)]
       })
       class TestRootModule {}
 
       TestBed.configureTestingModule({
-        imports: [TestRootModule],
+        imports: [TestRootModule]
       });
     });
 
@@ -388,7 +388,7 @@ describe('Service: DynamicMenu', () => {
 
       getService().addMenuToStart(['child', 'child2'], {
         path: 'custom',
-        data: { menu: { label: 'Custom' } },
+        data: { menu: { label: 'Custom' } }
       });
 
       getService()
@@ -434,7 +434,7 @@ describe('Service: DynamicMenu', () => {
 
       getService().addMenuToStart([''], {
         path: 'custom',
-        data: { menu: { label: 'Custom' } },
+        data: { menu: { label: 'Custom' } }
       });
 
       tick();
@@ -454,7 +454,7 @@ describe('Service: DynamicMenu', () => {
         {
           path: '',
           component: TestComponent,
-          data: { menu: { label: 'Main' } },
+          data: { menu: { label: 'Main' } }
         },
         {
           path: 'child',
@@ -463,24 +463,24 @@ describe('Service: DynamicMenu', () => {
             {
               path: 'child1',
               component: TestComponent,
-              data: { menu: { label: 'Child1' } },
+              data: { menu: { label: 'Child1' } }
             },
             {
               path: 'child2',
               component: TestComponent,
-              data: { menu: { label: 'Child2' } },
-            },
-          ],
-        },
+              data: { menu: { label: 'Child2' } }
+            }
+          ]
+        }
       ];
 
       @NgModule({
-        imports: [TestModule, RouterTestingModule.withRoutes(routes)],
+        imports: [TestModule, RouterTestingModule.withRoutes(routes)]
       })
       class TestRootModule {}
 
       TestBed.configureTestingModule({
-        imports: [TestRootModule],
+        imports: [TestRootModule]
       });
     });
 
@@ -489,7 +489,7 @@ describe('Service: DynamicMenu', () => {
 
       getService().addMenuToEnd(['child', 'child1'], {
         path: 'custom',
-        data: { menu: { label: 'Custom' } },
+        data: { menu: { label: 'Custom' } }
       });
 
       getService()
@@ -535,7 +535,7 @@ describe('Service: DynamicMenu', () => {
 
       getService().addMenuToEnd([''], {
         path: 'custom',
-        data: { menu: { label: 'Custom' } },
+        data: { menu: { label: 'Custom' } }
       });
 
       tick();

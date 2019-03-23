@@ -12,6 +12,6 @@ export class DynamicMenuTemplateContext {
      * @internal
      * Parent route config to determine if template should be rendered
      */
-    public parentConfig?: DynamicMenuRouteConfig,
+    public parentConfig?: DynamicMenuRouteConfig
   ) {}
 }
