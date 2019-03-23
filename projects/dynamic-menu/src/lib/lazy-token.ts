@@ -62,17 +62,21 @@ export class LazyTokenFactory<T> {
   }
 
   provideLazyToken(): Provider {
-    const { lazyTokenType } = this;
+    const { tokenProvider } = this;
 
     return {
-      provide: lazyTokenType,
+      provide: tokenProvider,
       useFactory: this.factory.bind(this),
       deps: [Injector]
     };
   }
 
   getServiceType() {
-    return this.lazyTokenType;
+    return this.tokenProvider;
+  }
+
+  toString() {
+    return `Lazy Token for ${this.token}`;
   }
 
   private factory(injector: Injector) {

@@ -7,7 +7,7 @@ import {
   RouteConfigLoadEnd,
   Router
 } from '@angular/router';
-import { combineLatest, EMPTY, Subject, zip } from 'rxjs';
+import { combineLatest, EMPTY, Subject, zip, of } from 'rxjs';
 import {
   delay,
   filter,
@@ -21,6 +21,7 @@ import {
 
 import { DynamicMenuExtrasService } from './dynamic-menu-extras';
 import { DYNAMIC_MENU_ROUTES_TOKEN } from './dynamic-menu-routes';
+import { LazyToken } from './lazy-token';
 import { SubMenuMap, SubMenuMapToken } from './sub-menu-map-provider';
 import {
   DynamicMenuConfigResolver,
@@ -71,7 +72,10 @@ export class DynamicMenuService implements OnDestroy {
     map(() => this.getDynamicMenuRoutes())
   );
 
-  private subMenuMap$ = this.getSubMenuMap();
+  private subMenuMap$ = combineLatest(
+    this.getSubMenuMap(),
+    this.configChanged$.pipe(startWith(null))
+  ).pipe(map(([subMenuMap]) => subMenuMap));
 
   private basicMenu$ = zip(this.dynamicMenuRoutes$, this.subMenuMap$).pipe(
     delay(0),
@@ -156,7 +160,16 @@ export class DynamicMenuService implements OnDestroy {
   }
 
   private getSubMenuMap() {
-    return this.injector.get(SubMenuMapToken).get();
+    const subMenuMapToken = this.injector.get<LazyToken<SubMenuMap[]> | null>(
+      SubMenuMapToken,
+      null
+    );
+
+    if (subMenuMapToken) {
+      return subMenuMapToken.get();
+    }
+
+    return of([]);
   }
 
   private resolveSubMenuComponent(
