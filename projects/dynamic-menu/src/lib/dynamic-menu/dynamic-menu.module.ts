@@ -6,6 +6,7 @@ import { DynamicMenuItemsComponent } from './dynamic-menu-items/dynamic-menu-ite
 import { DynamicMenuToggleDirective } from './dynamic-menu-toggle/dynamic-menu-toggle.directive';
 import { DynamicMenuWrapperDirective } from './dynamic-menu-wrapper/dynamic-menu-wrapper.directive';
 import { DynamicMenuComponent } from './dynamic-menu.component';
+import { MemoCompOutletDirective } from './memo-comp-outlet/memo-comp-outlet.directive';
 
 @NgModule({
   imports: [CommonModule],
@@ -14,14 +15,15 @@ import { DynamicMenuComponent } from './dynamic-menu.component';
     DynamicMenuItemsComponent,
     DynamicMenuWrapperDirective,
     DynamicMenuItemDirective,
-    DynamicMenuToggleDirective
+    DynamicMenuToggleDirective,
   ],
   declarations: [
     DynamicMenuComponent,
     DynamicMenuItemsComponent,
     DynamicMenuWrapperDirective,
     DynamicMenuItemDirective,
-    DynamicMenuToggleDirective
-  ]
+    DynamicMenuToggleDirective,
+    MemoCompOutletDirective,
+  ],
 })
 export class DynamicMenuComponentModule {}

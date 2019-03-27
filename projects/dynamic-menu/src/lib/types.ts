@@ -1,5 +1,6 @@
-import { Type } from '@angular/core';
-import { Route, Data } from '@angular/router';
+import { NgModuleFactory, Type } from '@angular/core';
+import { Data, Route } from '@angular/router';
+import { Observable } from 'rxjs';
 
 export interface MenuItem {
   /**
@@ -43,6 +44,7 @@ export interface RoutesWithMenu extends Array<RouteWithMenu> {}
 
 export interface DynamicMenuItem extends MenuItem {
   subMenuComponent?: Type<any>;
+  subMenuComponentModule?: Observable<NgModuleFactory<any> | 'root'>;
   children: DynamicMenuRouteConfig[];
 }
 
@@ -66,5 +68,5 @@ export interface DynamicMenuRouteConfig extends RouteWithMenu {
 
 export type DynamicMenuConfigResolver = (
   config: RouteWithMenu,
-  parentConfig?: DynamicMenuRouteConfig
+  parentConfig?: DynamicMenuRouteConfig,
 ) => DynamicMenuRouteConfig;

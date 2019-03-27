@@ -1,25 +1,28 @@
 import { CommonModule } from '@angular/common';
 import {
   ANALYZE_FOR_ENTRY_COMPONENTS,
+  Inject,
   ModuleWithProviders,
   NgModule,
+  Optional,
   Provider,
-  Type
+  Type,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { DynamicMenuComponentModule } from './dynamic-menu/dynamic-menu.module';
 import {
   DynamicMenuExtras,
-  provideDynamicMenuExtras
+  provideDynamicMenuExtras,
 } from './dynamic-menu-extras';
 import { provideDynamicMenuRoutes } from './dynamic-menu-routes';
+import { DynamicMenuComponentModule } from './dynamic-menu/dynamic-menu.module';
+import { LAZY_TOKENS, LazyToken } from './lazy-token';
 import { provideSubMenuMap } from './sub-menu-map-provider';
 import { RoutesWithMenu } from './types';
 
 @NgModule({
   imports: [CommonModule, RouterModule, DynamicMenuComponentModule],
-  exports: [DynamicMenuComponentModule]
+  exports: [DynamicMenuComponentModule],
 })
 export class DynamicMenuModule {
   /**
@@ -30,8 +33,8 @@ export class DynamicMenuModule {
       ngModule: DynamicMenuModule,
       providers: [
         provideDynamicMenuExtras({ listenForConfigChanges: true, ...extras }),
-        provideDynamicMenuRoutes([])
-      ]
+        provideDynamicMenuRoutes([]),
+      ],
     };
   }
 
@@ -44,14 +47,14 @@ export class DynamicMenuModule {
    */
   static withRoutes(
     routes: RoutesWithMenu,
-    extras?: DynamicMenuExtras
+    extras?: DynamicMenuExtras,
   ): ModuleWithProviders {
     return {
       ngModule: DynamicMenuModule,
       providers: [
         provideDynamicMenuExtras(extras),
-        provideDynamicMenuRoutes(routes)
-      ]
+        provideDynamicMenuRoutes(routes),
+      ],
     };
   }
 
@@ -66,9 +69,13 @@ export class DynamicMenuModule {
       {
         provide: ANALYZE_FOR_ENTRY_COMPONENTS,
         useValue: component,
-        multi: true
+        multi: true,
       },
-      ...provideSubMenuMap(name, component)
+      ...provideSubMenuMap(name, component),
     ];
+  }
+
+  constructor(@Inject(LAZY_TOKENS) @Optional() lazyTokens: LazyToken<any>[]) {
+    console.log('lazy tokens', lazyTokens);
   }
 }

@@ -10,7 +10,7 @@ const routes: RoutesWithMenu = [
   {
     path: '',
     component: PrintPathComponent,
-    data: { menu: { label: 'Home' } }
+    data: { menu: { label: 'Home' } },
   },
   {
     path: 'path2',
@@ -20,7 +20,7 @@ const routes: RoutesWithMenu = [
       {
         path: 'path4',
         component: PrintPathComponent,
-        data: { menu: { label: 'Section 4' } }
+        data: { menu: { label: 'Section 4' } },
       },
       {
         path: 'path5',
@@ -30,11 +30,11 @@ const routes: RoutesWithMenu = [
           {
             path: 'path8',
             component: PrintPathComponent,
-            data: { menu: { label: 'Section 8' } }
-          }
-        ]
-      }
-    ]
+            data: { menu: { label: 'Section 8' } },
+          },
+        ],
+      },
+    ],
   },
   {
     path: 'path3',
@@ -43,8 +43,8 @@ const routes: RoutesWithMenu = [
       menu: {
         label: 'Section 3',
         showChildrenIfActivated: true,
-        subMenuComponent: 'SubMenuForSection3'
-      }
+        subMenuComponent: 'SubMenuForSection3',
+      },
     },
     children: [
       {
@@ -53,16 +53,16 @@ const routes: RoutesWithMenu = [
           {
             path: 'path6',
             component: PrintPathComponent,
-            data: { menu: { label: 'Section 6' } }
+            data: { menu: { label: 'Section 6' } },
           },
           {
             path: 'path7',
             component: PrintPathComponent,
-            data: { menu: { label: 'Section 7' } }
-          }
-        ]
-      }
-    ]
+            data: { menu: { label: 'Section 7' } },
+          },
+        ],
+      },
+    ],
   },
   {
     path: 'path4',
@@ -70,28 +70,33 @@ const routes: RoutesWithMenu = [
       {
         path: 'path1',
         component: PrintPathComponent,
-        data: { menu: { label: 'Section 4.1' } }
+        data: { menu: { label: 'Section 4.1' } },
       },
       {
         path: 'path2',
         component: PrintPathComponent,
-        data: { menu: { label: 'Section 4.2' } }
-      }
-    ]
+        data: { menu: { label: 'Section 4.2' } },
+      },
+    ],
   },
   {
     path: 'feature1',
     // component: PrintPathComponent,
     loadChildren: './feature1/feature1.module#Feature1Module',
-    data: { menu: { label: 'Feature1' } }
-  }
+    data: {
+      menu: {
+        label: 'Feature1',
+        subMenuComponent: 'Feature1Component',
+      },
+    },
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [
-    DynamicMenuModule.provideSubMenu('SubMenuForSection3', Path3Component)
-  ]
+    ...DynamicMenuModule.provideSubMenu('SubMenuForSection3', Path3Component),
+  ],
 })
 export class AppRoutingModule {}

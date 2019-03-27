@@ -30,7 +30,7 @@ export class DynamicMenuItemsComponent implements DoCheck {
     filter(e => e instanceof NavigationEnd)
   );
 
-  shouldRender$ = this.navigationEnd$.pipe(
+  shouldRender$ = this.dynamicMenuService.willMenuUpdate().pipe(
     startWith(null),
     map(() => this.shouldRender())
   );
@@ -38,8 +38,8 @@ export class DynamicMenuItemsComponent implements DoCheck {
   constructor(
     private vcr: ViewContainerRef,
     private cdr: ChangeDetectorRef,
-    private dynamicMenuService: DynamicMenuService,
-    private router: Router
+    private router: Router,
+    private dynamicMenuService: DynamicMenuService
   ) {}
 
   ngDoCheck(): void {
