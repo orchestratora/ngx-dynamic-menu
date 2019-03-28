@@ -343,11 +343,15 @@ export class DynamicMenuService implements OnDestroy {
                 res.node,
                 children,
                 cb,
-              ) as T[];
+              ) as T[] | undefined;
 
-              return res.acc
-                ? [...res.acc, ...childrenInRoot]
-                : [...acc, ...childrenInRoot];
+              if (childrenInRoot) {
+                return res.acc
+                  ? [...res.acc, ...childrenInRoot]
+                  : [...acc, ...childrenInRoot];
+              } else {
+                return res.acc ? res.acc : acc;
+              }
             }
           } else if (isConfigMenuItem(res.node)) {
             this.visitMenuChildren(res.node, children, cb);
@@ -369,14 +373,14 @@ export class DynamicMenuService implements OnDestroy {
     children: AnyMenuRoute[],
     cb: MenuVisitor<AnyMenuRoute>,
     parentNode: AnyMenuRoute = node,
-  ): AnyMenuRoute[] {
-    const newChildren = this.visitMenu(children, cb, parentNode) as any;
+  ): AnyMenuRoute[] | undefined {
+    const newChildren = this.visitMenu(children, cb, parentNode);
 
-    if (!getMenuChildren(node) && newChildren) {
-      setMenuChildren(node, newChildren);
+    if (!getMenuChildren(node) && newChildren.length) {
+      setMenuChildren(node, newChildren as DynamicMenuRouteConfig[]);
     }
 
-    return newChildren || [];
+    return newChildren.length ? newChildren : undefined;
   }
 
   private combineMenuWithCustom(
