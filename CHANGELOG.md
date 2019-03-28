@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+## [1.5.7](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.6...v1.5.7) (2019-03-28)
+
+
+### Bug Fixes
+
+* **menu:** do not skip children if not generated in prev step ([f908039](https://github.com/orchestratora/ngx-dynamic-menu/commit/f908039))
+
 ## [1.5.6](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.5...v1.5.6) (2019-03-28)
 
 
