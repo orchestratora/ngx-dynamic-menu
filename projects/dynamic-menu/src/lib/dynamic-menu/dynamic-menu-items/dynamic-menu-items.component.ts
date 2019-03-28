@@ -3,6 +3,8 @@ import {
   Component,
   OnInit,
   ViewContainerRef,
+  ChangeDetectorRef,
+  DoCheck,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
@@ -22,8 +24,8 @@ export interface NgView<T, C = T> {
   styleUrls: ['./dynamic-menu-items.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DynamicMenuItemsComponent implements OnInit {
-  ctx!: DynamicMenuTemplateContext;
+export class DynamicMenuItemsComponent implements DoCheck {
+  ctx: DynamicMenuTemplateContext | undefined;
 
   navigationEnd$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),
@@ -36,18 +38,19 @@ export class DynamicMenuItemsComponent implements OnInit {
 
   constructor(
     private vcr: ViewContainerRef,
+    private cdr: ChangeDetectorRef,
     private dynamicMenuService: DynamicMenuService,
     private router: Router,
   ) {}
 
-  ngOnInit(): void {
-    const ctx = this.getTplContext((this.vcr as any)._view);
+  ngDoCheck(): void {
+    this.ctx = this.getTplContext((this.vcr as any)._view);
 
-    if (!ctx) {
+    if (!this.ctx) {
       throw Error(`DynamicMenuItemsComponent: Used outside of context!`);
     }
 
-    this.ctx = ctx;
+    this.cdr.markForCheck();
   }
 
   private getTplContext(view: NgView<any> | undefined) {
@@ -61,6 +64,10 @@ export class DynamicMenuItemsComponent implements OnInit {
   }
 
   private shouldRender() {
+    if (!this.ctx) {
+      return false;
+    }
+
     const { parentConfig } = this.ctx;
 
     if (parentConfig) {
