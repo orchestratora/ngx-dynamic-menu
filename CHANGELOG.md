@@ -1,5 +1,12 @@
 # NgxDynamicMenu - Changelog
 
+## [1.5.6](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.5...v1.5.6) (2019-03-28)
+
+
+### Bug Fixes
+
+* **menu:** detech changes in items component ([9fb523d](https://github.com/orchestratora/ngx-dynamic-menu/commit/9fb523d))
+
 ## [1.5.5](https://github.com/orchestratora/ngx-dynamic-menu/compare/v1.5.4...v1.5.5) (2019-03-19)
 
 
