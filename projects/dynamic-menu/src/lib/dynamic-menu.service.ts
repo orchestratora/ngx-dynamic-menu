@@ -3,7 +3,7 @@ import {
   Injectable,
   Injector,
   NgModuleRef,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import {
   ActivatedRoute,
@@ -11,7 +11,7 @@ import {
   Params,
   Route,
   RouteConfigLoadEnd,
-  Router
+  Router,
 } from '@angular/router';
 import {
   combineLatest,
@@ -20,7 +20,7 @@ import {
   Observable,
   of,
   Subject,
-  zip
+  zip,
 } from 'rxjs';
 import {
   delay,
@@ -33,7 +33,7 @@ import {
   scan,
   startWith,
   takeUntil,
-  tap
+  tap,
 } from 'rxjs/operators';
 
 import { DynamicMenuExtrasService } from './dynamic-menu-extras';
@@ -44,7 +44,7 @@ import {
   DynamicMenuConfigResolver,
   DynamicMenuRouteConfig,
   RoutesWithMenu,
-  RouteWithMenu
+  RouteWithMenu,
 } from './types';
 
 export interface CustomMenu {
@@ -59,7 +59,7 @@ export type AnyMenuRoute = RouteWithMenu | DynamicMenuRouteConfig;
 export type MenuVisitor<T> = (
   node: AnyMenuRoute,
   parentNode?: AnyMenuRoute,
-  acc?: AnyMenuRoute[]
+  acc?: AnyMenuRoute[],
 ) => { node: T; acc?: T[] };
 
 interface SubMenuModuleMap {
@@ -67,7 +67,7 @@ interface SubMenuModuleMap {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DynamicMenuService implements OnDestroy {
   private destroyed$ = new Subject<void>();
@@ -78,12 +78,12 @@ export class DynamicMenuService implements OnDestroy {
     scan((acc, customMenu) => [...acc, ...customMenu]),
     tap(v => console.log('custom menu', v)),
     publishBehavior<CustomMenu[]>([]),
-    refCount()
+    refCount(),
   );
 
   private updateMenu$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),
-    delay(0) // ? Delay is required to wait for merged router config
+    delay(0), // ? Delay is required to wait for merged router config
   );
 
   private configLoaded$ = this.dynamicMenuExtrasService.listenForConfigChanges
@@ -94,32 +94,32 @@ export class DynamicMenuService implements OnDestroy {
 
   private dynamicMenuRoutes$ = this.configChanged$.pipe(
     startWith(null),
-    map(() => this.getDynamicMenuRoutes())
+    map(() => this.getDynamicMenuRoutes()),
   );
 
   private subMenuMap$ = this.getSubMenuMap().pipe(
-    map(subMenuMaps => subMenuMaps.reduce((acc, m) => [...acc, ...m], []))
+    map(subMenuMaps => subMenuMaps.reduce((acc, m) => [...acc, ...m], [])),
   );
 
   private subMenuModuleMap$ = this.getSubMenuInfoMap().pipe(
-    map(subMenuMap => this.buildSubMenuModuleMap(subMenuMap))
+    map(subMenuMap => this.buildSubMenuModuleMap(subMenuMap)),
   );
 
   private basicMenu$ = zip(
     this.dynamicMenuRoutes$,
     this.subMenuMap$,
-    this.subMenuModuleMap$
+    this.subMenuModuleMap$,
   ).pipe(
     map(([routes, subMenuMap, subMenuModuleMap]) =>
-      this.buildFullUrlTree(routes, subMenuMap, subMenuModuleMap)
-    )
+      this.buildFullUrlTree(routes, subMenuMap, subMenuModuleMap),
+    ),
   );
 
   private fullMenu$ = combineLatest(
     this.basicMenu$,
     this.customMenu$,
     this.subMenuMap$,
-    this.subMenuModuleMap$
+    this.subMenuModuleMap$,
   ).pipe(
     tap(v => console.log('customMenu', v[1])),
     map(([basicMenu, customMenu, subMenuMap, subMenuModuleMap]) =>
@@ -127,21 +127,21 @@ export class DynamicMenuService implements OnDestroy {
         basicMenu,
         customMenu,
         subMenuMap,
-        subMenuModuleMap
-      )
+        subMenuModuleMap,
+      ),
     ),
-    tap(v => console.log('full menu', v))
+    tap(v => console.log('full menu', v)),
   );
 
   private params$ = this.updateMenu$.pipe(
-    map(() => this.collectAllParams(this.router.routerState.root))
+    map(() => this.collectAllParams(this.router.routerState.root)),
   );
 
   private dynamicMenu$ = combineLatest(this.fullMenu$, this.params$).pipe(
     map(([menu, params]) => this.updateFullPaths(menu, params)),
     tap(v => console.log('dynamic menu', v)),
     publishReplay(),
-    refCount()
+    refCount(),
   );
 
   constructor(
@@ -149,7 +149,7 @@ export class DynamicMenuService implements OnDestroy {
     private compiler: Compiler,
     private rootModuleRef: NgModuleRef<any>,
     private router: Router,
-    private dynamicMenuExtrasService: DynamicMenuExtrasService
+    private dynamicMenuExtrasService: DynamicMenuExtrasService,
   ) {
     // ? Immediate subscription required for custom menu to accumulate items
     this.dynamicMenu$.pipe(takeUntil(this.destroyed$)).subscribe();
@@ -176,8 +176,8 @@ export class DynamicMenuService implements OnDestroy {
       {
         location: fullPath,
         mode: 'insert',
-        menu: Array.isArray(menu) ? menu : [menu]
-      }
+        menu: Array.isArray(menu) ? menu : [menu],
+      },
     ]);
   }
 
@@ -186,8 +186,8 @@ export class DynamicMenuService implements OnDestroy {
       {
         location: fullPath,
         mode: 'start',
-        menu: Array.isArray(menu) ? menu : [menu]
-      }
+        menu: Array.isArray(menu) ? menu : [menu],
+      },
     ]);
   }
 
@@ -196,8 +196,8 @@ export class DynamicMenuService implements OnDestroy {
       {
         location: fullPath,
         mode: 'end',
-        menu: Array.isArray(menu) ? menu : [menu]
-      }
+        menu: Array.isArray(menu) ? menu : [menu],
+      },
     ]);
   }
 
@@ -210,7 +210,7 @@ export class DynamicMenuService implements OnDestroy {
   private getSubMenuService() {
     return this.injector.get<LazyToken<SubMenuMap[]> | null>(
       SubMenuMapToken,
-      null
+      null,
     );
   }
 
@@ -235,22 +235,22 @@ export class DynamicMenuService implements OnDestroy {
   }
 
   private buildSubMenuModuleMap(
-    subMenuMap: LazyTokenInfo<SubMenuMap[]>[]
+    subMenuMap: LazyTokenInfo<SubMenuMap[]>[],
   ): SubMenuModuleMap {
     return subMenuMap.reduce(
       (resolver, info) => ({
         ...info.value.reduce(
           (r, m) => ({ ...r, [m.name]: info.moduleRef }),
-          resolver
-        )
+          resolver,
+        ),
       }),
-      Object.create(null)
+      Object.create(null),
     );
   }
 
   private resolveSubMenuComponent(
     config: RouteWithMenu,
-    subMenuMap: SubMenuMap[]
+    subMenuMap: SubMenuMap[],
   ) {
     if (!config.data || !config.data.menu) {
       return;
@@ -275,7 +275,7 @@ export class DynamicMenuService implements OnDestroy {
 
   private resolveSubMenuModule(
     config: RouteWithMenu,
-    subMenuModuleMap: SubMenuModuleMap
+    subMenuModuleMap: SubMenuModuleMap,
   ) {
     if (!config.data || !config.data.menu) {
       return of('root' as 'root');
@@ -294,7 +294,7 @@ export class DynamicMenuService implements OnDestroy {
 
       return defer(() => this.compiler.compileModuleAsync(moduleCtor)).pipe(
         publishLast(),
-        refCount()
+        refCount(),
       );
     }
 
@@ -307,7 +307,7 @@ export class DynamicMenuService implements OnDestroy {
 
   private updateFullPaths(
     menu: DynamicMenuRouteConfig[],
-    params: Params
+    params: Params,
   ): DynamicMenuRouteConfig[] {
     if (!menu) {
       return menu;
@@ -321,9 +321,9 @@ export class DynamicMenuService implements OnDestroy {
           ...m.data,
           menu: {
             ...m.data.menu,
-            children: this.updateFullPaths(m.data.menu.children, params)
-          }
-        }
+            children: this.updateFullPaths(m.data.menu.children, params),
+          },
+        },
       };
     });
   }
@@ -334,7 +334,7 @@ export class DynamicMenuService implements OnDestroy {
     }
 
     return paths.map(path =>
-      path.startsWith(':') ? params[path.slice(1)] || path : path
+      path.startsWith(':') ? params[path.slice(1)] || path : path,
     );
   }
 
@@ -346,7 +346,7 @@ export class DynamicMenuService implements OnDestroy {
     let params = route.snapshot.params;
 
     route.children.forEach(
-      child => (params = { ...params, ...this.collectAllParams(child) })
+      child => (params = { ...params, ...this.collectAllParams(child) }),
     );
 
     return params;
@@ -356,7 +356,7 @@ export class DynamicMenuService implements OnDestroy {
     basicMenu: DynamicMenuRouteConfig[],
     customMenu: CustomMenu[],
     subMenuMap: SubMenuMap[],
-    subMenuModuleMap: SubMenuModuleMap
+    subMenuModuleMap: SubMenuModuleMap,
   ) {
     basicMenu = this.cloneMenu(basicMenu);
 
@@ -368,18 +368,23 @@ export class DynamicMenuService implements OnDestroy {
           config,
           subMenuMap,
           subMenuModuleMap,
-          parentConfig
-        )
+          parentConfig,
+        ),
     );
   }
 
   private buildFullUrlTree(
     node: RoutesWithMenu,
     subMenuMap: SubMenuMap[],
-    subMenuModuleMap: SubMenuModuleMap
+    subMenuModuleMap: SubMenuModuleMap,
   ): DynamicMenuRouteConfig[] {
     return this.buildUrlTree(node, (config, parentConfig) =>
-      this.resolveMenuConfig(config, subMenuMap, subMenuModuleMap, parentConfig)
+      this.resolveMenuConfig(
+        config,
+        subMenuMap,
+        subMenuModuleMap,
+        parentConfig,
+      ),
     );
   }
 
@@ -387,7 +392,7 @@ export class DynamicMenuService implements OnDestroy {
     config: RouteWithMenu,
     subMenuMap: SubMenuMap[],
     subMenuModuleMap: SubMenuModuleMap,
-    parentConfig?: DynamicMenuRouteConfig
+    parentConfig?: DynamicMenuRouteConfig,
   ): DynamicMenuRouteConfig {
     const path = parentConfig
       ? parentConfig.fullPath || [parentConfig.path]
@@ -396,7 +401,7 @@ export class DynamicMenuService implements OnDestroy {
     const subMenuComponent = this.resolveSubMenuComponent(config, subMenuMap);
     const subMenuComponentModule = this.resolveSubMenuModule(
       config,
-      subMenuModuleMap
+      subMenuModuleMap,
     );
 
     // tslint:disable-next-line: no-non-null-assertion
@@ -417,22 +422,22 @@ export class DynamicMenuService implements OnDestroy {
           children: undefined as any,
           ...(config.data && config.data.menu),
           subMenuComponent,
-          subMenuComponentModule
-        }
-      }
+          subMenuComponentModule,
+        },
+      },
     };
   }
 
   private buildUrlTree(
     node: (RouteWithMenu | DynamicMenuRouteConfig)[],
-    fn: DynamicMenuConfigResolver
+    fn: DynamicMenuConfigResolver,
   ): DynamicMenuRouteConfig[] {
     return this.visitMenu(node, (config, configParent) => {
       return {
         node: fn(
           config as DynamicMenuRouteConfig,
-          configParent as DynamicMenuRouteConfig
-        )
+          configParent as DynamicMenuRouteConfig,
+        ),
       };
     });
   }
@@ -440,7 +445,7 @@ export class DynamicMenuService implements OnDestroy {
   private visitMenu<T extends AnyMenuRoute>(
     nodes: AnyMenuRoute[],
     cb: MenuVisitor<T>,
-    parentNode?: AnyMenuRoute
+    parentNode?: AnyMenuRoute,
   ): T[] {
     if (!nodes) {
       return [];
@@ -468,7 +473,7 @@ export class DynamicMenuService implements OnDestroy {
               const childrenInRoot = this.visitMenuChildren(
                 res.node,
                 children,
-                cb
+                cb,
               ) as T[] | undefined;
 
               if (childrenInRoot) {
@@ -490,7 +495,7 @@ export class DynamicMenuService implements OnDestroy {
           return acc;
         }
       },
-      [] as T[]
+      [] as T[],
     );
   }
 
@@ -498,7 +503,7 @@ export class DynamicMenuService implements OnDestroy {
     node: AnyMenuRoute,
     children: AnyMenuRoute[],
     cb: MenuVisitor<AnyMenuRoute>,
-    parentNode: AnyMenuRoute = node
+    parentNode: AnyMenuRoute = node,
   ): AnyMenuRoute[] | undefined {
     const newChildren = this.visitMenu(children, cb, parentNode);
 
@@ -512,7 +517,7 @@ export class DynamicMenuService implements OnDestroy {
   private combineMenuWithCustom(
     basicMenu: DynamicMenuRouteConfig[],
     customMenu: CustomMenu[],
-    fn: DynamicMenuConfigResolver
+    fn: DynamicMenuConfigResolver,
   ): DynamicMenuRouteConfig[] {
     if (!customMenu.length) {
       return basicMenu;
@@ -562,7 +567,7 @@ export class DynamicMenuService implements OnDestroy {
           const menu = customItem.menu.map(m => {
             const p = {
               ...parentNode,
-              fullPath: customItem.location.slice(0, -1)
+              fullPath: customItem.location.slice(0, -1),
             };
             return fn(m as any, p as any);
           });
@@ -574,7 +579,7 @@ export class DynamicMenuService implements OnDestroy {
               newChildren = [
                 ...children.slice(0, idx + 1),
                 ...menu,
-                ...children.slice(idx + 1)
+                ...children.slice(idx + 1),
               ];
               break;
             case 'start':
@@ -588,14 +593,14 @@ export class DynamicMenuService implements OnDestroy {
           if (isConfigMenuItem(parentNode)) {
             setMenuChildren(
               parentNode,
-              newChildren as DynamicMenuRouteConfig[]
+              newChildren as DynamicMenuRouteConfig[],
             );
             return acc;
           } else {
             return newChildren;
           }
         },
-        [...(nodes || []), node] as AnyMenuRoute[]
+        [...(nodes || []), node] as AnyMenuRoute[],
       );
 
       return { node, acc: newNodes };
@@ -621,9 +626,9 @@ export class DynamicMenuService implements OnDestroy {
         ...m.data,
         menu: {
           ...m.data.menu,
-          children: this.cloneMenu(m.data.menu.children)
-        }
-      }
+          children: this.cloneMenu(m.data.menu.children),
+        },
+      },
     }));
   }
 }
@@ -637,7 +642,7 @@ function isConfigMenuItem(config?: Route): config is RouteWithMenu {
 }
 
 function getMenuChildren(
-  config?: RouteWithMenu
+  config?: RouteWithMenu,
 ): DynamicMenuRouteConfig[] | undefined {
   return isConfigMenuItem(config) && config.data && config.data.menu
     ? (config.data.menu as any).children
@@ -646,7 +651,7 @@ function getMenuChildren(
 
 function setMenuChildren(
   config: RouteWithMenu,
-  children: DynamicMenuRouteConfig[]
+  children: DynamicMenuRouteConfig[],
 ) {
   if (isConfigMenuItem(config) && config.data && config.data.menu) {
     (config.data.menu as any).children = children;
