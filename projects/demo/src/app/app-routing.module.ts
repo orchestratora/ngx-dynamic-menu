@@ -86,6 +86,7 @@ const routes: RoutesWithMenu = [
     data: {
       menu: {
         label: 'Feature1',
+        showChildrenIfActivated: true,
         subMenuComponent: 'Feature1Component',
       },
     },
