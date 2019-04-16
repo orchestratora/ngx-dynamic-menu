@@ -1,5 +1,7 @@
 import { InjectionToken, Provider, Type } from '@angular/core';
 
+import { createLazyToken } from './lazy-token';
+
 /**
  * @internal
  */
@@ -12,12 +14,19 @@ export interface SubMenuMap {
  * @internal
  */
 export const SUB_MENU_MAP_TOKEN = new InjectionToken<SubMenuMap[]>(
-  'SUB_MENU_MAP_TOKEN',
+  'SUB_MENU_MAP_TOKEN'
 );
+
+const subMenuMapLazyToken = createLazyToken(SUB_MENU_MAP_TOKEN);
 
 /**
  * @internal
  */
-export function provideSubMenuMap(name: string, type: Type<any>): Provider {
-  return { provide: SUB_MENU_MAP_TOKEN, useValue: { name, type }, multi: true };
+export const SubMenuMapToken = subMenuMapLazyToken.getServiceType();
+
+/**
+ * @internal
+ */
+export function provideSubMenuMap(name: string, type: Type<any>): Provider[] {
+  return subMenuMapLazyToken.provideValue({ name, type });
 }

@@ -1,7 +1,7 @@
 import { Directive, TemplateRef } from '@angular/core';
 
 @Directive({
-  selector: '[ndmDynamicMenuToggle]',
+  selector: '[ndmDynamicMenuToggle]'
 })
 export class DynamicMenuToggleDirective {
   constructor(public tplRef: TemplateRef<any>) {}

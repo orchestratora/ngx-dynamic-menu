@@ -1,19 +1,22 @@
 import { CommonModule } from '@angular/common';
 import {
   ANALYZE_FOR_ENTRY_COMPONENTS,
+  Inject,
   ModuleWithProviders,
   NgModule,
+  Optional,
   Provider,
   Type,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { DynamicMenuComponentModule } from './dynamic-menu/dynamic-menu.module';
 import {
   DynamicMenuExtras,
   provideDynamicMenuExtras,
 } from './dynamic-menu-extras';
 import { provideDynamicMenuRoutes } from './dynamic-menu-routes';
+import { DynamicMenuComponentModule } from './dynamic-menu/dynamic-menu.module';
+import { LAZY_TOKENS, LazyToken } from './lazy-token';
 import { provideSubMenuMap } from './sub-menu-map-provider';
 import { RoutesWithMenu } from './types';
 
@@ -68,7 +71,11 @@ export class DynamicMenuModule {
         useValue: component,
         multi: true,
       },
-      provideSubMenuMap(name, component),
+      ...provideSubMenuMap(name, component),
     ];
+  }
+
+  constructor(@Inject(LAZY_TOKENS) @Optional() lazyTokens: LazyToken<any>[]) {
+    console.log('lazy tokens', lazyTokens);
   }
 }

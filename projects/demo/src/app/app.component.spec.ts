@@ -12,7 +12,7 @@ describe('Component: App', () => {
       imports: [RouterTestingModule],
       declarations: [AppComponent],
       providers: [{ provide: DynamicMenuService, useValue: {} }],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
   });
 
@@ -20,7 +20,7 @@ describe('Component: App', () => {
     const fixture = TestBed.createComponent(AppComponent);
 
     const menuElem = fixture.debugElement.query(
-      By.css('ndm-default-dynamic-menu'),
+      By.css('ndm-default-dynamic-menu')
     );
 
     expect(menuElem).toBeTruthy();
@@ -30,7 +30,7 @@ describe('Component: App', () => {
     const fixture = TestBed.createComponent(AppComponent);
 
     const outletElem = fixture.debugElement.query(
-      By.css('ndm-default-dynamic-menu + router-outlet'),
+      By.css('ndm-default-dynamic-menu + router-outlet')
     );
 
     expect(outletElem).toBeTruthy();

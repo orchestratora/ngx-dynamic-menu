@@ -1,6 +1,24 @@
 <ng-container *ngIf="(shouldRender$ | async)">
   <ng-container
-    *ngComponentOutlet="ctx?.parentConfig?.data?.menu?.subMenuComponent"
-  ></ng-container>
+    *ngIf="
+      (ctx?.parentConfig?.data?.menu?.subMenuComponentModule
+        | async) as moduleFactory
+    "
+    [ngSwitch]="moduleFactory"
+  >
+    <ng-container *ngSwitchCase="'root'">
+      <ng-container
+        *ndmMemoCompOutlet="ctx?.parentConfig?.data?.menu?.subMenuComponent"
+      ></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <ng-container
+        *ndmMemoCompOutlet="
+          ctx?.parentConfig?.data?.menu?.subMenuComponent;
+          ngModuleFactory: moduleFactory
+        "
+      ></ng-container>
+    </ng-container>
+  </ng-container>
   <ng-container *ngTemplateOutlet="ctx?.tpl; context: ctx?.ctx"></ng-container>
 </ng-container>

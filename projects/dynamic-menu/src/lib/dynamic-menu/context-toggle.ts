@@ -11,7 +11,7 @@ export class DynamicMenuToggleContext extends DynamicMenuItemContext {
     /** Every computed route config */
     $implicit: DynamicMenuRouteConfig,
     tpl: TemplateRef<any>,
-    opened: boolean = false,
+    opened: boolean = false
   ) {
     super($implicit, tpl);
     this.context.opened = opened;

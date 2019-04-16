@@ -1,13 +1,13 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ContentChild,
-  OnDestroy,
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { EMPTY, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { EMPTY, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 import { DynamicMenuService } from '../dynamic-menu.service';
 import { DynamicMenuRouteConfig } from '../types';
@@ -24,7 +24,7 @@ import { DynamicMenuWrapperDirective } from './dynamic-menu-wrapper/dynamic-menu
   styleUrls: ['./dynamic-menu.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DynamicMenuComponent implements OnInit, OnDestroy {
+export class DynamicMenuComponent implements OnInit {
   @ContentChild(DynamicMenuWrapperDirective)
   wrapperDir: DynamicMenuWrapperDirective | undefined;
 
@@ -34,24 +34,23 @@ export class DynamicMenuComponent implements OnInit, OnDestroy {
   @ContentChild(DynamicMenuToggleDirective)
   toggleDir: DynamicMenuToggleDirective | undefined;
 
-  menu$: Observable<DynamicMenuRouteConfig[]> = EMPTY;
+  menuCtx$: Observable<any> = EMPTY;
 
   private ctxCache = new Map<any, any>();
-  private destroyed$ = new Subject<void>();
 
-  constructor(private dynamicMenuService: DynamicMenuService) {}
+  constructor(
+    private dynamicMenuService: DynamicMenuService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
-    this.menu$ = this.dynamicMenuService.getMenu();
-
-    this.menu$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(() => this.ctxCache.clear());
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.ctxCache.clear();
+    this.menuCtx$ = this.dynamicMenuService.getMenu().pipe(
+      map(menu => ({ $implicit: menu })),
+      tap(() => {
+        this.ctxCache.clear();
+        this.cdr.markForCheck();
+      }),
+    );
   }
 
   getWrapperCtx(configs: DynamicMenuRouteConfig[], tpl: TemplateRef<any>) {

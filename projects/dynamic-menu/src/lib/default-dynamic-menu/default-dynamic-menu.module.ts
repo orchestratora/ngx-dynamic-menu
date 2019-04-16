@@ -8,6 +8,6 @@ import { DefaultDynamicMenuComponent } from './default-dynamic-menu.component';
 @NgModule({
   imports: [CommonModule, RouterModule, DynamicMenuComponentModule],
   exports: [DefaultDynamicMenuComponent],
-  declarations: [DefaultDynamicMenuComponent],
+  declarations: [DefaultDynamicMenuComponent]
 })
 export class DefaultDynamicMenuComponentModule {}

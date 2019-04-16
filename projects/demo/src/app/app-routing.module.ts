@@ -79,13 +79,25 @@ const routes: RoutesWithMenu = [
       },
     ],
   },
+  {
+    path: 'feature1',
+    // component: PrintPathComponent,
+    loadChildren: './feature1/feature1.module#Feature1Module',
+    data: {
+      menu: {
+        label: 'Feature1',
+        showChildrenIfActivated: true,
+        subMenuComponent: 'Feature1Component',
+      },
+    },
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [
-    DynamicMenuModule.provideSubMenu('SubMenuForSection3', Path3Component),
+    ...DynamicMenuModule.provideSubMenu('SubMenuForSection3', Path3Component),
   ],
 })
 export class AppRoutingModule {}

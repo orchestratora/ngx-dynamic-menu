@@ -27,6 +27,10 @@ export class AppComponent implements OnInit {
       path: 'custom-path-start',
       data: { menu: { label: 'Custom Section - Start' } },
     });
+    this.dynamicMenuService.addMenuAfter([''], {
+      path: 'custom-path-after',
+      data: { menu: { label: 'Custom Section - After' } },
+    });
     this.dynamicMenuService.addMenuToEnd([''], {
       path: 'custom-path-end',
       data: { menu: { label: 'Custom Section - End' } },
